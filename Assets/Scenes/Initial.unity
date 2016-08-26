@@ -868,6 +868,10 @@ Prefab:
       propertyPath: _initialHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 11485172, guid: fa88d320ca44f0a489d7cc9279913413, type: 2}
+      propertyPath: _animator
+      value: 
+      objectReference: {fileID: 1675332258}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa88d320ca44f0a489d7cc9279913413, type: 2}
   m_IsPrefabParent: 0
@@ -980,6 +984,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4000011215559488, guid: 9f286fdac8a2ca840a9ddf457f1e253b,
     type: 2}
   m_PrefabInternal: {fileID: 1783090008}
+--- !u!95 &1653518393 stripped
+Animator:
+  m_PrefabParentObject: {fileID: 95000013318240446, guid: 9f286fdac8a2ca840a9ddf457f1e253b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1783090008}
 --- !u!224 &1660442987 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224000010163569770, guid: fb7556d2556396c4ab64c702480066f4,
@@ -991,6 +1000,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 511143014}
   m_Script: {fileID: 11500000, guid: 7b1859744540fd54ca00318fd0a34d93, type: 3}
+--- !u!95 &1675332258 stripped
+Animator:
+  m_PrefabParentObject: {fileID: 9585172, guid: fa88d320ca44f0a489d7cc9279913413,
+    type: 2}
+  m_PrefabInternal: {fileID: 1108948391}
 --- !u!1001 &1754554988
 Prefab:
   m_ObjectHideFlags: 0
@@ -1158,7 +1172,7 @@ Prefab:
     - target: {fileID: 195000011102652518, guid: 9f286fdac8a2ca840a9ddf457f1e253b,
         type: 2}
       propertyPath: m_StoppingDistance
-      value: 1.8
+      value: 1.9
       objectReference: {fileID: 0}
     - target: {fileID: 4000013154938682, guid: 9f286fdac8a2ca840a9ddf457f1e253b, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1204,6 +1218,16 @@ Prefab:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 195000011102652518, guid: 9f286fdac8a2ca840a9ddf457f1e253b,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013249562336, guid: 9f286fdac8a2ca840a9ddf457f1e253b,
+        type: 2}
+      propertyPath: _animator
+      value: 
+      objectReference: {fileID: 1653518393}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9f286fdac8a2ca840a9ddf457f1e253b, type: 2}
   m_IsPrefabParent: 0

@@ -4,10 +4,6 @@ using System.Collections;
 
 public class PlayerCharacter : BaseWorldCharacter
 {
-    private const int ANIMATION_BASE_LAYER = 0;
-    private const int ANIMATION_STRAFE_LAYER = 1;
-    private const int ANIMATION_ATTACK_LAYER = 2;
-
     public float _walkSpeed = 0.15f;
 	public float _runSpeed = 1.0f;
 	public float _sprintSpeed = 2.0f;
@@ -254,7 +250,7 @@ public class PlayerCharacter : BaseWorldCharacter
     {
         //value of 1 is end of anim
         //value of 0.5 is end of anim
-        AnimatorStateInfo animStateInfo = _anim.GetCurrentAnimatorStateInfo(ANIMATION_ATTACK_LAYER);
+        AnimatorStateInfo animStateInfo = _anim.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
         if (animStateInfo.IsName("Attack"))
         {
             return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop);
@@ -279,7 +275,6 @@ public class PlayerCharacter : BaseWorldCharacter
         else
         {
             _currentHealth = 0;
-            //Destroy(this.gameObject);
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }

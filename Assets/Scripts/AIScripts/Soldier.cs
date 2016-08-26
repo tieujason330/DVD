@@ -4,8 +4,6 @@ using System;
 
 public class Soldier : BaseAIUnit
 {
-    private const int ANIMATION_ATTACK_LAYER = 1;
-
     public SoldierGroup _soldierGroup;
     //public BaseWorldCharacter _followCharacter;
     private NavMeshAgent _navMeshAgent;
@@ -46,8 +44,15 @@ public class Soldier : BaseAIUnit
     {
         if (_followCharacter != null)
         {
-            _runBool = true;
             _navMeshAgent.SetDestination(_followCharacter.gameObject.transform.position);
+            if (Vector3.Distance(_followCharacter.transform.position, transform.position) <=
+                _navMeshAgent.stoppingDistance)
+            {
+                _runBool = false;
+            }
+            else
+                _runBool = true;
+
             AttackLogic();
         }
         else
@@ -77,16 +82,16 @@ public class Soldier : BaseAIUnit
         _animator.SetBool(_animatorAttackParameter, _attackBool);
     }
 
-    public override void PerformAction(string _action)
+    public override void PerformAction(string action)
     {
         // Do soldier action
-        PerformOwnAction(_action);
+        PerformOwnAction(action);
     }
 
-    public override void PerformOwnAction(string _action)
+    public override void PerformOwnAction(string action)
     {
         _animator.speed = 1f;
-        _animator.Play(_action);
+        _animator.Play(action);
     }
 
     public override void TakeDamage(float damage)
@@ -97,7 +102,7 @@ public class Soldier : BaseAIUnit
         else
         {
             _currentHealth = 0;
-            Destroy(this.gameObject);
+            gameObject.SetActive(false);
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }
@@ -106,7 +111,7 @@ public class Soldier : BaseAIUnit
     {
         //value of 1 is end of anim
         //value of 0.5 is end of anim
-        AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(ANIMATION_ATTACK_LAYER);
+        AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
         if (animStateInfo.IsName("Attack"))
         {
             return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop);
@@ -117,12 +122,19 @@ public class Soldier : BaseAIUnit
 
     public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {
-        attackedCharacter.TakeDamage(damage);
+        if (attackedCharacter != null)
+            attackedCharacter.TakeDamage(damage);
     }
 
     public override void DetectCharacter(BaseWorldCharacter character)
     {
         if (_followCharacter == null || character == null)
             _followCharacter = character;
+    }
+
+    public void InitializeCharacter()
+    {
+        //after being set inactive, reactivating
+        _currentHealth = _initialHealth;
     }
 }

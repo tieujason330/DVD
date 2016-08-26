@@ -7,13 +7,10 @@ public class HealthBar : MonoBehaviour {
     public GameObject _healthBarFill;
 
     public float _currentBarValue;
-    private bool _initialized = false;
 
     // Use this for initialization
     void Start()
     {
-        if (_character != null)
-            _initialized = true;
         _currentBarValue = _character._currentHealth / _character._initialHealth;
     }
 

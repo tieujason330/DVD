@@ -14,7 +14,6 @@ public abstract class BaseAIUnit : BaseWorldCharacter
 
     void Awake()
     {
-        
     }
 
     // Use this for initialization
