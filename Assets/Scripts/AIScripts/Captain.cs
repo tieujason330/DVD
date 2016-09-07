@@ -36,28 +36,4 @@ public class Captain : BaseAIUnit
         _animator.Play(_action);
     }
 
-    public override void TakeDamage(float damage)
-    {
-        Debug.Log(string.Format("{0} ouch.", gameObject.name));
-    }
-
-    public override bool IsAttacking()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void FollowDetectionCharacter(BaseWorldCharacter character)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void AttackDetectionCharacter(BaseWorldCharacter character)
-    {
-        throw new NotImplementedException();
-    }
 }
