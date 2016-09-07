@@ -50,7 +50,12 @@ public class Commander : BaseAIUnit
         throw new NotImplementedException();
     }
 
-    public override void DetectCharacter(BaseWorldCharacter character)
+    public override void FollowDetectionCharacter(BaseWorldCharacter character)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void AttackDetectionCharacter(BaseWorldCharacter character)
     {
         throw new NotImplementedException();
     }

@@ -30,30 +30,31 @@ public class Soldier : BaseAIUnit
     // Use this for initialization
     void Start ()
     {
-        _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent = GetComponentInChildren<NavMeshAgent>();
     }
 	
 	// Update is called once per frame
 	void Update ()
 	{
+	    base.Update();
+
         NavigationLogic();
+        AttackLogic();
 	    UpdateAnimations();
 	}
 
     void NavigationLogic()
     {
-        if (_followCharacter != null)
+        if (_followDetectionCharacter != null)
         {
-            _navMeshAgent.SetDestination(_followCharacter.gameObject.transform.position);
-            if (Vector3.Distance(_followCharacter.transform.position, transform.position) <=
+            _navMeshAgent.SetDestination(_followDetectionCharacter.gameObject.transform.position);
+            if (Vector3.Distance(_followDetectionCharacter.transform.position, transform.position) <=
                 _navMeshAgent.stoppingDistance)
             {
                 _runBool = false;
             }
             else
                 _runBool = true;
-
-            AttackLogic();
         }
         else
             _runBool = false;
@@ -64,16 +65,25 @@ public class Soldier : BaseAIUnit
         //for debug
         Vector3 forward = transform.TransformDirection(Vector3.forward)*2;
         Debug.DrawRay(transform.position, forward, Color.green);
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, forward, out hit, _maxAttackDistance))
+        if (_attackDetectionCharacter)
         {
-            //need to generalize...
-            if (hit.collider.gameObject.tag == "Player")
-                _attackBool = true;
+            _attackBool = true;
+            Vector3 lookDirection = _attackDetectionCharacter.transform.position - transform.position;
+            transform.rotation = Quaternion.LookRotation(lookDirection);
         }
         else
+        {
             _attackBool = false;
+        }
+        //Note - don't want to do raycast b/c raycast can't detect gameobject w/ NavMeshAgent on it WTF..
+        //RaycastHit hit;
+        //if (Physics.Raycast(transform.position, forward, out hit, _maxAttackDistance))
+        //{
+        //    if (hit.collider.gameObject.GetComponent<BaseWorldCharacter>()._faction != this._faction)
+        //        _attackBool = true;
+        //}
+        //else
+        //    _attackBool = false;
     }
 
     void UpdateAnimations()
@@ -102,7 +112,6 @@ public class Soldier : BaseAIUnit
         else
         {
             _currentHealth = 0;
-            gameObject.SetActive(false);
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }
@@ -126,10 +135,16 @@ public class Soldier : BaseAIUnit
             attackedCharacter.TakeDamage(damage);
     }
 
-    public override void DetectCharacter(BaseWorldCharacter character)
+    public override void FollowDetectionCharacter(BaseWorldCharacter character)
     {
-        if (_followCharacter == null || character == null)
-            _followCharacter = character;
+        if (_followDetectionCharacter == null || character == null)
+            _followDetectionCharacter = character;
+    }
+
+    public override void AttackDetectionCharacter(BaseWorldCharacter character)
+    {
+        if (_attackDetectionCharacter == null || character == null)
+            _attackDetectionCharacter = character;
     }
 
     public void InitializeCharacter()

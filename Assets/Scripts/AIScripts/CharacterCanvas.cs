@@ -4,7 +4,12 @@ using System.Collections;
 public class CharacterCanvas : MonoBehaviour
 {
 
-    public Camera m_Camera;
+    private Camera _mainCamera;
+
+    void Awake()
+    {
+        _mainCamera = GameObject.FindGameObjectWithTag(Consts.TAG_MAIN_CAMERA).GetComponent<Camera>();
+    }
 
     // Use this for initialization
     void Start()
@@ -14,7 +19,7 @@ public class CharacterCanvas : MonoBehaviour
 
     void Update()
     {
-        transform.LookAt(transform.position + m_Camera.transform.rotation*Vector3.forward,
-            m_Camera.transform.rotation*Vector3.up);
+        transform.LookAt(transform.position + _mainCamera.transform.rotation*Vector3.forward,
+            _mainCamera.transform.rotation*Vector3.up);
     }
 }

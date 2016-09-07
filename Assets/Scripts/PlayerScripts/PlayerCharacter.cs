@@ -68,6 +68,9 @@ public class PlayerCharacter : BaseWorldCharacter
 		_sprintFactor = _sprintSpeed / _runSpeed;
 
 	    _currentHealth = _initialHealth;
+
+	    _faction = Faction.Player;
+	    _status = CharacterStatus.Alive;
 	}
 
     void Start()
@@ -82,6 +85,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
 	void Update()
 	{
+        base.Update();
 		// fly
 		if(Input.GetButtonDown ("Fly"))
 			_fly = !_fly;
