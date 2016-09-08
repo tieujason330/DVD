@@ -17,9 +17,6 @@ public class BaseAIUnit : BaseWorldCharacter
     private bool _runBool;
     private bool _attackBool;
 
-    public BaseWorldCharacter _followDetectionCharacter = null;
-    public BaseWorldCharacter _attackDetectionCharacter = null;
-
     protected Animator _animator;
 
     public void Awake()

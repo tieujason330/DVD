@@ -76,7 +76,7 @@ public class PlayerCharacter : BaseWorldCharacter
     void Start()
     {
         //test
-        gameObject.AddComponent<Soldier>().InitializeRole();
+        //gameObject.AddComponent<Soldier>().InitializeRole();
     }
 
 	bool IsGrounded() {
@@ -245,7 +245,7 @@ public class PlayerCharacter : BaseWorldCharacter
 		return _aim && !_fly;
 	}
 
-	public bool isSprinting()
+	public bool IsSprinting()
 	{
 		return _sprint && !_aim && (_isMoving);
 	}

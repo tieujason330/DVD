@@ -1,36 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Linq;
 
 // CommanderGroup creates the orders
-public class CommanderGroup : BaseAIUnitGroup
+public class CommanderGroup : BaseGroup
 {
-    public Commander[] _commanders;
     private string[] _animations;
     private int _currentNumber;
 
     void Awake()
     {
-        _commanders = GetComponentsInChildren<Commander>();
-
-        _animations = new string[] {
-            "standing_melee_attack_downward",
-            "Teat_01",
-            "Basic_Run_01",
-            "Basic_Run_02",
-            "Basic_Run_03",
-            "Basic_Walk_01",
-            "Basic_Walk_02",
-            "Etc_Walk_Zombi_01"
-
-        };
-
-        _currentNumber = 0;
+        base.Awake();
     }
 
     // Use this for initialization
     void Start () {
-        PerformGroupAction(_animations[_currentNumber]);
     }
 	
 	// Update is called once per frame
@@ -40,39 +25,18 @@ public class CommanderGroup : BaseAIUnitGroup
 
     void OnGUI()
     {
-        if (GUI.Button(new Rect(50, 50, 50, 50), "<"))
+        if (GUI.Button(new Rect(50, 50, 60, 40), "Attack"))
         {
-            _currentNumber--;
-
-            if (_currentNumber < 0)
-            {
-                _currentNumber = _animations.Length - 1;
-            }
-
-            PerformGroupAction(_animations[_currentNumber]);
-
+            AttackCommand attackCommand = new AttackCommand(GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<BaseWorldCharacter>());
+            ExecuteCommand(attackCommand);
         }
-
-        if (GUI.Button(new Rect(250, 50, 50, 50), ">"))
-        {
-            _currentNumber++;
-
-            if (_currentNumber == _animations.Length)
-            {
-                _currentNumber = 0;
-            }
-
-            PerformGroupAction(_animations[_currentNumber]);
-        }
-
-        GUI.Label(new Rect(125, 50, 80, 80), "Commander Controls");
-        GUI.Label(new Rect(125, 80, 200, 100), _animations[_currentNumber].ToString());
-
     }
 
-    public override void PerformGroupAction(string _action)
+    public override void ExecuteCommand(BaseCommand command)
     {
-        foreach(Commander commander in _commanders)
-            commander.PerformAction(_action);
+        foreach (Commander commander in _units)
+        {
+            commander.ExecuteCommand(command);
+        }
     }
 }

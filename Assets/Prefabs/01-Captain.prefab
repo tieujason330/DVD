@@ -449,6 +449,7 @@ GameObject:
   - 136: {fileID: 136000014102340966}
   - 195: {fileID: 195000013751806200}
   - 114: {fileID: 114000013651594250}
+  - 114: {fileID: 114000012531045572}
   m_Layer: 0
   m_Name: 01-Captain
   m_TagString: Untagged
@@ -1445,7 +1446,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012444434146}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.2083116, y: 1.2083112, z: 1.2083112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1850,6 +1851,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114000012531045572
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012444434146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65803d0cc85ce648b750485b8d89857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _myCharacter: {fileID: 0}
+  _captainGroup: {fileID: 0}
+  _soldierGroup: {fileID: 0}
 --- !u!114 &114000013333657186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1888,11 +1903,11 @@ MonoBehaviour:
   _initialHealth: 150
   _faction: 1
   _status: 0
+  _followDetectionCharacter: {fileID: 0}
+  _attackDetectionCharacter: {fileID: 0}
   _minAttackDamage: 0
   _maxAttackDamage: 0
   _navMeshAgent: {fileID: 0}
-  _followDetectionCharacter: {fileID: 0}
-  _attackDetectionCharacter: {fileID: 0}
 --- !u!114 &114000013871963312
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -8,30 +8,8 @@ public class PlayManager : MonoBehaviour
 	private int currentNumber;
 
 	// Use this for initialization
-	void Start () {
-
-		animClipNameGroup = new string[] {
-			"Teat_01",
-			"Basic_Run_01",
-			"Basic_Run_02",
-			"Basic_Run_03",
-			"Basic_Walk_01",
-			"Basic_Walk_02",
-			"Etc_Walk_Zombi_01"
-
-		};
-
-		currentNumber = 0;
-
-
-		playerGroup = GameObject.Find ("PlayerGroup").transform.GetComponentsInChildren<Commander>();
-
-		for(int i = 0; i < playerGroup.Length; i++)
-		{
-			//playerGroup[i].speed = 1f;
-			//playerGroup[i].Play(animClipNameGroup[currentNumber]);
-            playerGroup[i].PerformAction(animClipNameGroup[currentNumber]);
-		}
+	void Start ()
+    {
 	}
 
 
@@ -50,7 +28,7 @@ public class PlayManager : MonoBehaviour
 			{
                 //playerGroup[i].speed = 1f;
                 //playerGroup[i].Play(animClipNameGroup[currentNumber]);
-                playerGroup[i].PerformAction(animClipNameGroup[currentNumber]);
+                //playerGroup[i].PerformAction(animClipNameGroup[currentNumber]);
 
             }
 
@@ -69,7 +47,7 @@ public class PlayManager : MonoBehaviour
 			{
                 //playerGroup[i].speed = 1f;
                 //playerGroup[i].Play(animClipNameGroup[currentNumber]);
-                playerGroup[i].PerformAction(animClipNameGroup[currentNumber]);
+                //playerGroup[i].PerformAction(animClipNameGroup[currentNumber]);
             }
 		}
 

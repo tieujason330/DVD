@@ -2,13 +2,13 @@
 using System.Collections;
 using System;
 
-public class Commander : BaseRole
+public class Commander : CharacterRole
 {
     public CaptainGroup _captainGroup;
 
     void Awake()
     {
-        base.Awake();
+        //base.Awake();
     }
 
     // Use this for initialization
@@ -23,12 +23,10 @@ public class Commander : BaseRole
         //base.Update();
     }
 
-    public new void ExecuteCommand(BaseCommand command)
+    public override void ExecuteCommand(BaseCommand _command)
     {
-        base.ExecuteCommand(command);
-        // Tell Capt Group to do command too
-        if (_captainGroup != null)
-            _captainGroup.ExecuteCommand(command);
+        // Do commander action
+        Perform;
     }
 
     public override void PerformOwnAction(string _action)
@@ -37,9 +35,8 @@ public class Commander : BaseRole
         //_animator.Play(_action);
     }
 
-    public new void InitializeRole()
+    public override void InitializeRole()
     {
-        base.InitializeRole();
-        Debug.Log("Commander init.");
+        throw new NotImplementedException();
     }
 }

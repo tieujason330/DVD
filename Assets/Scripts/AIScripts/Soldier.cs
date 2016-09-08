@@ -2,13 +2,13 @@
 using System.Collections;
 using System;
 
-public class Soldier : CharacterRole
+public class Soldier : BaseRole
 {
     public SoldierGroup _soldierGroup;
 
     void Awake()
     {
-        //base.Awake();
+        base.Awake();
     }
 
     // Use this for initialization
@@ -23,10 +23,9 @@ public class Soldier : CharacterRole
 	    //base.Update();
 	}
 
-    public override void PerformAction(string action)
+    public new void ExecuteCommand(BaseCommand command)
     {
-        // Do soldier action
-        PerformOwnAction(action);
+        base.ExecuteCommand(command);
     }
 
     public override void PerformOwnAction(string action)
@@ -35,8 +34,9 @@ public class Soldier : CharacterRole
         //_animator.Play(action);
     }
 
-    public override void InitializeRole()
+    public new void InitializeRole()
     {
+        base.InitializeRole();
         Debug.Log("Soldier init.");
     }
 }

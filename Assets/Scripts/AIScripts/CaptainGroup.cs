@@ -2,14 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CaptainGroup : BaseAIUnitGroup
+public class CaptainGroup : BaseGroup
 {
     public Commander _commander;
-    public Captain[] _captains;
 
     void Awake()
     {
-        _captains = GetComponentsInChildren<Captain>();
+        base.Awake();
     }
 
 	// Use this for initialization
@@ -22,11 +21,11 @@ public class CaptainGroup : BaseAIUnitGroup
 	
 	}
 
-    public override void PerformGroupAction(string _action)
+    public override void ExecuteCommand(BaseCommand command)
     {
-        foreach (Captain captain in _captains)
+        foreach (Captain captain in _units)
         {
-            captain.PerformAction(_action);
+            captain.ExecuteCommand(command);
         }
     }
 }

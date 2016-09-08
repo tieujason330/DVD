@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseCommand : MonoBehaviour
+public class BaseCommand
 {
-
     public CommandType _commandType;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public BaseCommand()
+    {
+    }
+
+    //// Use this for initialization
+    //void Start () {
+
+    //}
+
+    //// Update is called once per frame
+    //void Update () {
+
+    //}
 }

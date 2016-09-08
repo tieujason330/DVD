@@ -1082,7 +1082,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013709534680}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1744,11 +1744,11 @@ MonoBehaviour:
   _initialHealth: 100
   _faction: 1
   _status: 0
+  _followDetectionCharacter: {fileID: 0}
+  _attackDetectionCharacter: {fileID: 0}
   _minAttackDamage: 0
   _maxAttackDamage: 0
   _navMeshAgent: {fileID: 0}
-  _followDetectionCharacter: {fileID: 0}
-  _attackDetectionCharacter: {fileID: 0}
 --- !u!114 &114000012398173136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1824,6 +1824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718bdb124f151a5499ec3d0290e9559c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _myCharacter: {fileID: 0}
   _soldierGroup: {fileID: 0}
 --- !u!114 &114000013497437004
 MonoBehaviour:

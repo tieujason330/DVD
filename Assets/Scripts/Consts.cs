@@ -8,6 +8,7 @@ public static class Consts {
     public const int ANIMATION_ATTACK_LAYER = 2;
 
     public const string TAG_MAIN_CAMERA = "MainCamera";
+    public const string TAG_PLAYER = "Player";
 }
 
 public enum Faction

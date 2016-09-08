@@ -7,6 +7,9 @@ public abstract class BaseWorldCharacter : MonoBehaviour
     public float _initialHealth;
     public Faction _faction;
     public CharacterStatus _status;
+
+    public BaseWorldCharacter _followDetectionCharacter = null;
+    public BaseWorldCharacter _attackDetectionCharacter = null;
     // Use this for initialization
     void Start () {
 	
@@ -23,9 +26,11 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 
     public void CheckPlayerStatus()
     {
-        if (_currentHealth <= 0)
-            _status = CharacterStatus.Dead;
-        else
-            _status = CharacterStatus.Alive;
+        _status = _currentHealth <= 0 ? CharacterStatus.Dead : CharacterStatus.Alive;
+    }
+
+    public void SetTargetCharacter(BaseWorldCharacter character)
+    {
+        _followDetectionCharacter = character;
     }
 }
