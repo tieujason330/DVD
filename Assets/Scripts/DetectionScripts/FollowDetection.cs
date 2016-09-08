@@ -5,12 +5,13 @@ using System.Collections;
 public class FollowDetection : MonoBehaviour
 {
 
-    public BaseAIUnit _myCharacter;
+    BaseAIUnit _myCharacter;
     public float _followDetectionRadius = 0.0f;
 
     void Awake()
     {
         GetComponent<SphereCollider>().radius = _followDetectionRadius;
+        _myCharacter = GetComponentInParent<BaseAIUnit>();
     }
 
 	// Use this for initialization
@@ -35,7 +36,7 @@ public class FollowDetection : MonoBehaviour
         }
         catch (NullReferenceException ex)
         {
-            
+            Debug.Log(ex.Message);
         }
     }
 

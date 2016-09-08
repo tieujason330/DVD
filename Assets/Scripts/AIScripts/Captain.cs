@@ -2,26 +2,27 @@
 using System.Collections;
 using System;
 
-public class Captain : BaseAIUnit
+public class Captain : CharacterRole
 {
     public CaptainGroup _captainGroup;
     public SoldierGroup _soliderGroup;
 
     void Awake()
     {
-        _animator = GetComponent<Animator>();
+        //base.Awake();
     }
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
-
+        //base.Start();
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+        //base.Update();
+    }
 
     public override void PerformAction(string _action)
     {
@@ -32,8 +33,12 @@ public class Captain : BaseAIUnit
 
     public override void PerformOwnAction(string _action)
     {
-        _animator.speed = 1f;
-        _animator.Play(_action);
+        //_animator.speed = 1f;
+        //_animator.Play(_action);
     }
 
+    public override void InitializeRole()
+    {
+        throw new NotImplementedException();
+    }
 }

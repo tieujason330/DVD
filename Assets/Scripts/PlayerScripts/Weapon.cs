@@ -2,9 +2,9 @@
 using UnityEngine;
 using System.Collections;
 
-public class Sword : MonoBehaviour
+public class Weapon : MonoBehaviour
 {
-    public BaseWorldCharacter _Character;
+    BaseWorldCharacter _myCharacter;
 
     public float _minimumDamage = 0.0f;
     public float _maximumDamage = 0.0f;
@@ -15,6 +15,7 @@ public class Sword : MonoBehaviour
 
     void Awake()
     {
+        _myCharacter = GetComponentInParent<BaseWorldCharacter>();
         _collider = GetComponent<BoxCollider>();
         _collider.enabled = false;
         _collisionEntered = false;
@@ -28,10 +29,10 @@ public class Sword : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_Character.IsAttacking() && !_collisionEntered)
+        if (_myCharacter.IsAttacking() && !_collisionEntered)
             _collider.enabled = true;
 
-        if (!_Character.IsAttacking())
+        if (!_myCharacter.IsAttacking())
         {
             _collider.enabled = false;
             _collisionEntered = false;
@@ -44,7 +45,7 @@ public class Sword : MonoBehaviour
         _collider.enabled = false;
         BaseWorldCharacter attackedCharacter = collider.gameObject.GetComponent<BaseWorldCharacter>();
         if (attackedCharacter != null)
-            _Character.GiveDamage(CalculateDamage(), attackedCharacter);
+            _myCharacter.GiveDamage(CalculateDamage(), attackedCharacter);
     }
 
     private float CalculateDamage()

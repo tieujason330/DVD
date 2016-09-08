@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 
-public abstract class BaseAIUnit : BaseWorldCharacter
+public class BaseAIUnit : BaseWorldCharacter
 {
     // Unit info
     public float _minAttackDamage = 0.0f;
@@ -21,10 +21,6 @@ public abstract class BaseAIUnit : BaseWorldCharacter
     public BaseWorldCharacter _attackDetectionCharacter = null;
 
     protected Animator _animator;
-
-    //Abstract methods
-    public abstract void PerformAction(string _action);
-    public abstract void PerformOwnAction(string _action);
 
     public void Awake()
     {
@@ -49,8 +45,11 @@ public abstract class BaseAIUnit : BaseWorldCharacter
 	{
         base.Update();
 
-        if (_currentHealth <= 0)
-            gameObject.SetActive(false);
+	    if (_currentHealth <= 0)
+	    {
+	        gameObject.SetActive(false);
+	        return;
+	    }
 
 	    if (_followDetectionCharacter != null && _followDetectionCharacter._status == CharacterStatus.Dead)
 	        _followDetectionCharacter = null;

@@ -6,6 +6,7 @@ using System.Linq;
 public class PlayerGUI : MonoBehaviour
 {
     public HealthBar _playerHealthBar;
+    public PlayerCharacter _player;
 
     void Awake()
     {
@@ -14,8 +15,8 @@ public class PlayerGUI : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-
-	}
+        _playerHealthBar.SetCharacter(_player);
+    }
 	
 	// Update is called once per frame
 	void Update ()

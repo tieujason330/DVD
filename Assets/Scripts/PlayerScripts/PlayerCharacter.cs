@@ -75,8 +75,8 @@ public class PlayerCharacter : BaseWorldCharacter
 
     void Start()
     {
-        //_mixedAttackAnimation["standing_melee_attack_downward"].layer = 5;
-        //_mixedAttackAnimation["standing_melee_attack_downward"].AddMixingTransform(_upperBody);
+        //test
+        gameObject.AddComponent<Soldier>().InitializeRole();
     }
 
 	bool IsGrounded() {

@@ -745,6 +745,7 @@ GameObject:
   - 54: {fileID: 54000014259104418}
   - 136: {fileID: 136000010357300970}
   - 195: {fileID: 195000013239651764}
+  - 114: {fileID: 114000012377843110}
   m_Layer: 0
   m_Name: 01-Soldier
   m_TagString: Untagged
@@ -1726,9 +1727,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1859744540fd54ca00318fd0a34d93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _character: {fileID: 114000013249562336}
   _healthBarFill: {fileID: 1000010638090090}
   _currentBarValue: 0
+--- !u!114 &114000012377843110
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013709534680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fee6d44452229e46831b0fa136eba76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentHealth: 0
+  _initialHealth: 100
+  _faction: 1
+  _status: 0
+  _minAttackDamage: 0
+  _maxAttackDamage: 0
+  _navMeshAgent: {fileID: 0}
+  _followDetectionCharacter: {fileID: 0}
+  _attackDetectionCharacter: {fileID: 0}
 --- !u!114 &114000012398173136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1804,16 +1824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718bdb124f151a5499ec3d0290e9559c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentHealth: 0
-  _initialHealth: 100
-  _faction: 1
-  _status: 0
-  _minAttackDamage: 0
-  _maxAttackDamage: 0
-  _followDetectionCharacter: {fileID: 0}
-  _attackDetectionCharacter: {fileID: 0}
   _soldierGroup: {fileID: 0}
-  _maxAttackDistance: 2
 --- !u!114 &114000013497437004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1825,7 +1836,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d00d12fa56e89943a6b1ece78f0f5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Character: {fileID: 114000013249562336}
   _minimumDamage: 5
   _maximumDamage: 10
 --- !u!114 &114000013862787550
@@ -1866,7 +1876,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6dfdbdf1b101c8419bfb0475f711020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _myCharacter: {fileID: 114000013249562336}
   _attackDetectionRadius: 2
 --- !u!114 &114000013918590280
 MonoBehaviour:
@@ -1917,7 +1926,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a4937645cfaaf64a82b6ae33e35454b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _myCharacter: {fileID: 114000013249562336}
   _followDetectionRadius: 10
 --- !u!135 &135000010330801558
 SphereCollider:

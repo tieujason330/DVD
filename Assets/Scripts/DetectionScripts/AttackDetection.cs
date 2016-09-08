@@ -4,12 +4,13 @@ using System.Collections;
 
 public class AttackDetection : MonoBehaviour {
 
-    public BaseAIUnit _myCharacter;
+    BaseAIUnit _myCharacter;
     public float _attackDetectionRadius = 0.0f;
 
     void Awake()
     {
         GetComponent<SphereCollider>().radius = _attackDetectionRadius;
+        _myCharacter = GetComponentInParent<BaseAIUnit>();
     }
 
     // Use this for initialization
@@ -36,7 +37,7 @@ public class AttackDetection : MonoBehaviour {
         }
         catch (NullReferenceException ex)
         {
-
+            Debug.Log(ex.Message);
         }
     }
 

@@ -17,8 +17,22 @@ public enum Faction
     Faction2
 }
 
+public enum Role
+{
+    None,
+    Soldier,
+    Captain,
+    Commander
+}
+
 public enum CharacterStatus
 {
     Alive,
     Dead
+}
+
+public enum CommandType
+{
+    Attack,
+    Move
 }
