@@ -126,7 +126,7 @@ public class BaseAIUnit : BaseWorldCharacter
         AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
         if (animStateInfo.IsName("Attack"))
         {
-            return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop);
+            return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
         }
         //Added AttackLoopBuffer in Animator to allow return false during loop
         return false;
