@@ -731,7 +731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000013709534680
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,6 +1744,7 @@ MonoBehaviour:
   _initialHealth: 100
   _faction: 1
   _status: 0
+  _attackFrame: 0
   _followDetectionCharacter: {fileID: 0}
   _attackDetectionCharacter: {fileID: 0}
   _minAttackDamage: 0
