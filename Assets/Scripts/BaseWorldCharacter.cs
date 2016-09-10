@@ -7,15 +7,18 @@ public abstract class BaseWorldCharacter : MonoBehaviour
     public float _initialHealth;
     public Faction _faction;
     public CharacterStatus _status;
+    public CharacterAction _action;
 
     public bool _attackFrame;
 
+    public Vector3 _destinationPosition = Vector3.zero;
     public BaseWorldCharacter _followDetectionCharacter = null;
     public BaseWorldCharacter _attackDetectionCharacter = null;
 
     void Awake()
     {
         _attackFrame = false;
+        _action = CharacterAction.None;
     }
 
     // Use this for initialization
@@ -46,4 +49,6 @@ public abstract class BaseWorldCharacter : MonoBehaviour
     {
         _followDetectionCharacter = character;
     }
+
+    public abstract void SetDestinationPosition(Vector3 destination);
 }

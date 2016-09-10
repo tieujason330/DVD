@@ -282,4 +282,9 @@ public class PlayerCharacter : BaseWorldCharacter
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }
+
+    public override void SetDestinationPosition(Vector3 destination)
+    {
+        throw new NotImplementedException();
+    }
 }

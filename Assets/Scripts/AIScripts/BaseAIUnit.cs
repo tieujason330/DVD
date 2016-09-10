@@ -60,19 +60,34 @@ public class BaseAIUnit : BaseWorldCharacter
 
     void NavigationLogic()
     {
+        if (_action == CharacterAction.MoveTo)
+        {
+            _navMeshAgent.stoppingDistance = 0.1f;
+            _navMeshAgent.SetDestination(_destinationPosition);
+            _runBool = !(Vector3.Distance(_destinationPosition, transform.position) <=
+             _navMeshAgent.stoppingDistance);
+            if (!_runBool) _action = CharacterAction.None;
+            return;
+        }
+
         if (_followDetectionCharacter != null)
         {
+            _navMeshAgent.stoppingDistance = 1.7f;
             _navMeshAgent.SetDestination(_followDetectionCharacter.gameObject.transform.position);
-            if (Vector3.Distance(_followDetectionCharacter.transform.position, transform.position) <=
-                _navMeshAgent.stoppingDistance)
-            {
-                _runBool = false;
-            }
-            else
-                _runBool = true;
+            _runBool = !(Vector3.Distance(_followDetectionCharacter.transform.position, transform.position) <=
+                         _navMeshAgent.stoppingDistance);
         }
         else
+        {
             _runBool = false;
+            _navMeshAgent.SetDestination(_navMeshAgent.transform.position);
+        }
+    }
+
+    public override void SetDestinationPosition(Vector3 destination)
+    {
+        _destinationPosition = destination;
+        _action = CharacterAction.MoveTo;
     }
 
     void AttackLogic()
@@ -141,12 +156,18 @@ public class BaseAIUnit : BaseWorldCharacter
     public void FollowDetectionCharacter(BaseWorldCharacter character)
     {
         if (_followDetectionCharacter == null || character == null)
+        {
             _followDetectionCharacter = character;
+            _action = CharacterAction.Follow;
+        }
     }
 
     public void AttackDetectionCharacter(BaseWorldCharacter character)
     {
         if (_attackDetectionCharacter == null || character == null)
+        {
             _attackDetectionCharacter = character;
+            _action = CharacterAction.Attack;
+        }
     }
 }

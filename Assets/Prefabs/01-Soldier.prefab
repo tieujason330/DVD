@@ -1744,7 +1744,9 @@ MonoBehaviour:
   _initialHealth: 100
   _faction: 1
   _status: 0
+  _action: 0
   _attackFrame: 0
+  _destinationPosition: {x: 0, y: 0, z: 0}
   _followDetectionCharacter: {fileID: 0}
   _attackDetectionCharacter: {fileID: 0}
   _minAttackDamage: 0
@@ -1826,6 +1828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _myCharacter: {fileID: 0}
+  _destination: {x: 0, y: 0, z: 0}
   _soldierGroup: {fileID: 0}
 --- !u!114 &114000013497437004
 MonoBehaviour:

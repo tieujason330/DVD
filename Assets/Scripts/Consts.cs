@@ -37,3 +37,11 @@ public enum CommandType
     Attack,
     Move
 }
+
+public enum CharacterAction
+{
+    None,
+    Attack,
+    Follow,
+    MoveTo
+}

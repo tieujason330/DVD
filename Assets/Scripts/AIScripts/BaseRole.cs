@@ -5,6 +5,8 @@ public abstract class BaseRole : MonoBehaviour {
 
     public BaseWorldCharacter _myCharacter;
 
+    public Vector3 _destination;
+
     public void Awake()
     {
         InitializeRole();
