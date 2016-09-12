@@ -785,7 +785,7 @@ GameObject:
   - 65: {fileID: 533145217}
   - 23: {fileID: 533145216}
   - 114: {fileID: 533145215}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3573,6 +3573,18 @@ Prefab:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 1f2da60ede4af5c4c96ff1745653a1b6, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1f2da60ede4af5c4c96ff1745653a1b6, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1f2da60ede4af5c4c96ff1745653a1b6, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f2da60ede4af5c4c96ff1745653a1b6, type: 3}
   m_IsPrefabParent: 0
@@ -3584,7 +3596,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1785311319}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ProjectileContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
