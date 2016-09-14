@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using System;
 
 public class BaseAIUnit : BaseWorldCharacter
 {
@@ -196,5 +197,10 @@ public class BaseAIUnit : BaseWorldCharacter
             _attackDetectionCharacter = character;
             _action = CharacterAction.Attack;
         }
+    }
+
+    public override bool IsAiming()
+    {
+        throw new NotImplementedException();
     }
 }

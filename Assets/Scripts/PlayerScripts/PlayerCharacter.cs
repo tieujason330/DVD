@@ -30,7 +30,8 @@ public class PlayerCharacter : BaseWorldCharacter
 	private int _aimBool;
 	private int _flyBool;
 	private int _groundedBool;
-    private int _attackAnimationID;
+    private int _meleeEquipped;
+    private int _meleeAttackBool;
     private int _damagedTrigger;
 	private Transform _cameraTransform;
 
@@ -59,7 +60,8 @@ public class PlayerCharacter : BaseWorldCharacter
 		_hFloat = Animator.StringToHash("H");
 		_vFloat = Animator.StringToHash("V");
 		_aimBool = Animator.StringToHash("Aim");
-        _attackAnimationID = Animator.StringToHash("Attack");
+	    _meleeEquipped = Animator.StringToHash("MeleeEquipped");
+        _meleeAttackBool = Animator.StringToHash("MeleeAttack");
 	    _damagedTrigger = Animator.StringToHash("Damaged");
 		// fly
 		_flyBool = Animator.StringToHash ("Fly");
@@ -147,7 +149,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
     void AttackManagement()
     {
-        _anim.SetBool(_attackAnimationID, _attackButtonPressed);
+        _anim.SetBool(_meleeAttackBool, _attackButtonPressed);
     }
 
 	void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
@@ -192,19 +194,19 @@ public class PlayerCharacter : BaseWorldCharacter
 
 		float finalTurnSmoothing;
 
-		if(IsAiming())
-		{
-			targetDirection = forward;
-			finalTurnSmoothing = _aimTurnSmoothing;
-		}
-		else
-		{
-			targetDirection = forward * vertical + right * horizontal;
-			finalTurnSmoothing = _turnSmoothing;
-		}
+        if (IsAiming())
+        {
+            targetDirection = forward;
+            finalTurnSmoothing = _aimTurnSmoothing;
+        }
+        else
+        {
+            targetDirection = forward * vertical + right * horizontal;
+            finalTurnSmoothing = _turnSmoothing;
+        }
 
-		if((_isMoving && targetDirection != Vector3.zero) || IsAiming())
-		{
+        if ((_isMoving && targetDirection != Vector3.zero) || IsAiming())
+        {
 			Quaternion targetRotation = Quaternion.LookRotation (targetDirection, Vector3.up);
 			// fly
 			if (_fly)
@@ -240,7 +242,7 @@ public class PlayerCharacter : BaseWorldCharacter
 		return _fly;
 	}
 
-	public bool IsAiming()
+	public override bool IsAiming()
 	{
 		return _aim && !_fly;
 	}
@@ -255,7 +257,7 @@ public class PlayerCharacter : BaseWorldCharacter
         //value of 1 is end of anim
         //value of 0.5 is end of anim
         AnimatorStateInfo animStateInfo = _anim.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-        if (animStateInfo.IsName("Attack"))
+        if (animStateInfo.IsName("MeleeAttack"))
         {
             return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
         }
