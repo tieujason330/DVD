@@ -230,8 +230,9 @@ public class PlayerCharacter : BaseWorldCharacter
             {
                 string currentBuffer = "MeleeBuffer" + _attackComboCounter;
                 string previousBuffer = "MeleeBuffer" + (_attackComboCounter - 1);
-                clickedDuringCurrentAndPreviousBuffer = currentAnimStateInfo.IsName(currentBuffer) &&
-                                                        _previousAnimationStateAttackClicked.IsName(previousBuffer);
+                clickedDuringCurrentAndPreviousBuffer = _attackComboCounter == 1 
+                    ? currentAnimStateInfo.IsName(currentBuffer) && (_previousAnimationStateAttackClicked.IsName(previousBuffer) || _previousAnimationStateAttackClicked.IsName("MeleeBuffer6"))
+                    : currentAnimStateInfo.IsName(currentBuffer) && _previousAnimationStateAttackClicked.IsName(previousBuffer);
             }
 
             if (clickedDuringCurrentAndPreviousBuffer)
