@@ -56,8 +56,8 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 
 	void LateUpdate()
 	{
-		angleH += Mathf.Clamp(Input.GetAxis("AimHorizontal"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
-		angleV += Mathf.Clamp(Input.GetAxis("AimVertical"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
+		angleH += Mathf.Clamp(Input.GetAxis("LookHorizontal"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
+		angleV += Mathf.Clamp(Input.GetAxis("LookVertical"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
 
 		// fly
 		if(playerControl.IsFlying())

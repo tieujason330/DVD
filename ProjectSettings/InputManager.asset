@@ -6,7 +6,7 @@ InputManager:
   serializedVersion: 2
   m_Axes:
   - serializedVersion: 3
-    m_Name: AimHorizontal
+    m_Name: LookHorizontal
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: left
@@ -14,8 +14,8 @@ InputManager:
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1.5
-    dead: 0.05
-    sensitivity: 0.5
+    dead: 0.075
+    sensitivity: 0.625
     snap: 1
     invert: 0
     type: 2
@@ -30,15 +30,15 @@ InputManager:
     altNegativeButton: a
     altPositiveButton: d
     gravity: 1.5
-    dead: 0.001
+    dead: 0.075
     sensitivity: 0.5
     snap: 1
     invert: 0
     type: 2
-    axis: 0
+    axis: 1
     joyNum: 0
   - serializedVersion: 3
-    m_Name: AimVertical
+    m_Name: LookVertical
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: down
@@ -46,8 +46,8 @@ InputManager:
     altNegativeButton: 
     altPositiveButton: 
     gravity: 3
-    dead: 0.05
-    sensitivity: 0.5
+    dead: 0.075
+    sensitivity: 0.625
     snap: 1
     invert: 1
     type: 2
@@ -62,12 +62,12 @@ InputManager:
     altNegativeButton: s
     altPositiveButton: w
     gravity: 3
-    dead: 0.001
+    dead: 0.075
     sensitivity: 0.5
     snap: 1
     invert: 1
     type: 2
-    axis: 1
+    axis: 0
     joyNum: 0
   - serializedVersion: 3
     m_Name: Run
@@ -92,7 +92,7 @@ InputManager:
     negativeButton: 
     positiveButton: mouse 0
     altNegativeButton: 
-    altPositiveButton: mouse 0
+    altPositiveButton: joystick button 2
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -282,7 +282,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 3
+    positiveButton: joystick button 0
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000

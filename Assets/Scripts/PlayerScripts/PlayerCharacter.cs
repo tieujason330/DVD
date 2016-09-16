@@ -113,11 +113,11 @@ public class PlayerCharacter : BaseWorldCharacter
 		if(Input.GetButtonDown ("Fly"))
 			_fly = !_fly;
 		_aim = Input.GetButton("Aim");
-		_h = Input.GetAxis("AimHorizontal");
-		_v = Input.GetAxis("AimVertical");
+		_h = Input.GetAxis("MoveHorizontal");
+		_v = Input.GetAxis("MoveVertical");
 
 	    _attackButtonPressed = Input.GetButtonDown("Attack");
-
+        //print(_attackButtonPressed);
         _run = Input.GetButton ("Run");
 		_sprint = Input.GetButton ("Sprint");
 		_isMoving = Mathf.Abs(_h) > 0.1 || Mathf.Abs(_v) > 0.1;
@@ -138,7 +138,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
 		else
 		{
-			MovementManagement (_h, _v, true, _sprint);
+            MovementManagement (_h, _v, true, _sprint);
 			JumpManagement ();
 		    AttackManagement();
 		}
@@ -204,9 +204,9 @@ public class PlayerCharacter : BaseWorldCharacter
     void AttackManagement()
     {
         AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-        if (!_comboTimer.gameObject.activeSelf && 
+        if (!_comboTimer.gameObject.activeSelf &&
             _attackComboCounter > 0 &&
-            currentAnimStateInfo.IsName("MeleeBuffer" + _attackComboCounter) && 
+            currentAnimStateInfo.IsName("MeleeBuffer" + _attackComboCounter) &&
             !_attackButtonPressed)
         {
             ResetComboTimer(currentAnimStateInfo.length);
@@ -277,7 +277,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
 	void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
 	{
-		Rotating(horizontal, vertical);
+		Rotating(-vertical, -horizontal);
 
 		if(_isMoving)
 		{
@@ -303,19 +303,18 @@ public class PlayerCharacter : BaseWorldCharacter
 		}
 		GetComponent<Rigidbody>().AddForce(Vector3.forward*_speed);
 	}
-
 	Vector3 Rotating(float horizontal, float vertical)
 	{
-		Vector3 forward = _cameraTransform.TransformDirection(Vector3.forward);
-		if (!_fly)
-			forward.y = 0.0f;
-		forward = forward.normalized;
+        Vector3 forward = _cameraTransform.TransformDirection(Vector3.forward);
+        if (!_fly)
+            forward.y = 0.0f;
+        forward = forward.normalized;
 
-		Vector3 right = new Vector3(forward.z, 0, -forward.x);
+        Vector3 right = new Vector3(forward.z, 0, -forward.x);
 
-		Vector3 targetDirection;
+        Vector3 targetDirection;
 
-		float finalTurnSmoothing;
+        float finalTurnSmoothing;
 
         if (IsAiming())
         {
@@ -328,24 +327,27 @@ public class PlayerCharacter : BaseWorldCharacter
             finalTurnSmoothing = _turnSmoothing;
         }
 
-        if ((_isMoving && targetDirection != Vector3.zero) || IsAiming())
-        {
-			Quaternion targetRotation = Quaternion.LookRotation (targetDirection, Vector3.up);
-			// fly
-			if (_fly)
-				targetRotation *= Quaternion.Euler (90, 0, 0);
+        //if ((_isMoving && targetDirection != Vector3.zero) || IsAiming())
+        //{
+        //    Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+        //    // fly
+        //    if (_fly)
+        //        targetRotation *= Quaternion.Euler(90, 0, 0);
 
-			Quaternion newRotation = Quaternion.Slerp(GetComponent<Rigidbody>().rotation, targetRotation, finalTurnSmoothing * Time.deltaTime);
-			GetComponent<Rigidbody>().MoveRotation (newRotation);
-			_lastDirection = targetDirection;
-		}
-		//idle - fly or grounded
-		if(!(Mathf.Abs(_h) > 0.9 || Mathf.Abs(_v) > 0.9))
-		{
-			Repositioning();
-		}
+        //    Quaternion newRotation = Quaternion.Slerp(GetComponent<Rigidbody>().rotation, targetRotation, finalTurnSmoothing * Time.deltaTime);
+        //    GetComponent<Rigidbody>().MoveRotation(newRotation);
+        //    _lastDirection = targetDirection;
+        //}
+        ////idle - fly or grounded
+        //if (!(Mathf.Abs(_h) > 0.9 || Mathf.Abs(_v) > 0.9))
+        //{
+        //    Repositioning();
+        //}
+           
+        if (targetDirection.sqrMagnitude > 0.1f)
+            transform.LookAt(transform.position + targetDirection);
 
-		return targetDirection;
+        return targetDirection;
 	}	
 
 	private void Repositioning()
