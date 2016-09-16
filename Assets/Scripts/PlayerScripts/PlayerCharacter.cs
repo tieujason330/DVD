@@ -49,7 +49,8 @@ public class PlayerCharacter : BaseWorldCharacter
 	private bool _isMoving;
 
     public int _maxComboCount = 4;
-    public int _attackComboCurrentCounter;
+    public int _attackComboCounter;
+    public int _attackComboPoints;
     private AnimatorStateInfo _previousAnimationStateAttackClicked;
     public float _initialComboTimer;
     public float _currentComboTimer;
@@ -204,8 +205,8 @@ public class PlayerCharacter : BaseWorldCharacter
     {
         AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
         if (!_comboTimer.gameObject.activeSelf && 
-            _attackComboCurrentCounter > 0 &&
-            currentAnimStateInfo.IsName("MeleeBuffer" + _attackComboCurrentCounter) && 
+            _attackComboCounter > 0 &&
+            currentAnimStateInfo.IsName("MeleeBuffer" + _attackComboCounter) && 
             !_attackButtonPressed)
         {
             ResetComboTimer(currentAnimStateInfo.length);
@@ -214,32 +215,50 @@ public class PlayerCharacter : BaseWorldCharacter
         if (_attackButtonPressed)
         {
             //first attack
-            if (_attackComboCurrentCounter < 1)
+            if (_attackComboCounter < 1)
             {
-                _attackComboCurrentCounter++;
+                _attackComboCounter++;
+                _attackComboPoints++;
                 _previousAnimationStateAttackClicked = currentAnimStateInfo;
             }
 
-            string currentBuffer = "MeleeBuffer" + _attackComboCurrentCounter;
-            string previousBuffer = "MeleeBuffer" + (_attackComboCurrentCounter - 1);
-            bool clickedDuringCurrentAndPreviousBuffer = currentAnimStateInfo.IsName(currentBuffer) &&
-                                        _previousAnimationStateAttackClicked.IsName(previousBuffer);
+            bool clickedDuringCurrentAndPreviousBuffer = false;
+            if (_attackComboCounter == 1)
+            {
+                clickedDuringCurrentAndPreviousBuffer = currentAnimStateInfo.IsName("MeleeBuffer1") &&
+                                                        (_previousAnimationStateAttackClicked.IsName("MeleeBuffer0") ||
+                                                         _previousAnimationStateAttackClicked.IsName("MeleeBuffer" +
+                                                                                                     _maxComboCount));
+            }
+            else
+            {
+                string currentBuffer = "MeleeBuffer" + _attackComboCounter;
+                string previousBuffer = "MeleeBuffer" + (_attackComboCounter - 1);
+                clickedDuringCurrentAndPreviousBuffer = currentAnimStateInfo.IsName(currentBuffer) &&
+                                                             _previousAnimationStateAttackClicked.IsName(previousBuffer);
+            }
 
             if (clickedDuringCurrentAndPreviousBuffer)
             {
-                if (_attackComboCurrentCounter >= _maxComboCount)
-                    _attackComboCurrentCounter = 1;
+                if (_attackComboCounter >= _maxComboCount)
+                    _attackComboCounter = 1;
                 else
-                    _attackComboCurrentCounter++;
+                    _attackComboCounter++;
+
+                if (_attackComboPoints < _maxComboCount)
+                    _attackComboPoints++;
+
                 //save previous animation state that attack was clicked
                 _previousAnimationStateAttackClicked = currentAnimStateInfo;
             }
             else
             {
                 //if clicking attack during an attack animation - reset combo points
-                string currentMeleeAttack = "MeleeAttack" + _attackComboCurrentCounter;
+                string currentMeleeAttack = "MeleeAttack" + _attackComboCounter;
                 if (currentAnimStateInfo.IsName(currentMeleeAttack))
-                    _attackComboCurrentCounter = 1;
+                {
+                    _attackComboCounter = _attackComboPoints = 1;
+                }
             }
 
             if (_comboTimer.gameObject.activeSelf)
@@ -248,11 +267,11 @@ public class PlayerCharacter : BaseWorldCharacter
 
         else if (!_attackButtonPressed && currentAnimStateInfo.IsName("MeleeBuffer0"))
         {
-            _attackComboCurrentCounter = 0;
+            _attackComboCounter = _attackComboPoints = 0;
         }
 
-        _comboPoints.SetComboPoints(_attackComboCurrentCounter, _maxComboCount);
-        _animator.SetInteger(_meleeAttackComboCounterInt, _attackComboCurrentCounter);
+        _comboPoints.SetComboPoints(_attackComboPoints, _maxComboCount);
+        _animator.SetInteger(_meleeAttackComboCounterInt, _attackComboCounter);
         _animator.SetBool(_meleeAttackBool, _attackButtonPressed);
     }
 
@@ -361,7 +380,7 @@ public class PlayerCharacter : BaseWorldCharacter
         //value of 1 is end of anim
         //value of 0.5 is end of anim
         AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-        if (animStateInfo.IsName("MeleeAttack" + _attackComboCurrentCounter))
+        if (animStateInfo.IsName("MeleeAttack" + _attackComboCounter))
         {
             return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
         }
