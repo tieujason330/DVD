@@ -31,6 +31,7 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 	    CheckPlayerStatus();
 	}
 
+    public abstract bool IsAiming();
     public abstract bool IsAttacking();
     public abstract void GiveDamage(float damage, BaseWorldCharacter attackedCharacter);
     public abstract void TakeDamage(float damage);

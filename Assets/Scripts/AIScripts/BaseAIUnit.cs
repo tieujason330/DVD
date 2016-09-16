@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using System;
 
 public class BaseAIUnit : BaseWorldCharacter
 {
@@ -13,11 +14,16 @@ public class BaseAIUnit : BaseWorldCharacter
     private int _animationRunParameter;
     private int _animatorAttackParameter;
     private int _animatorDamagedParameter;
+    private int _animatorArmedParameter;
+    private int _animatorUnarmedParameter;
 
     private bool _runBool;
     private bool _attackBool;
 
     protected Animator _animator;
+
+    private MeleeWeapon _meleeWeapon;
+    private bool _weaponArmed;
 
     public void Awake()
     {
@@ -26,9 +32,14 @@ public class BaseAIUnit : BaseWorldCharacter
         _animator = GetComponent<Animator>();
         _currentHealth = _initialHealth;
 
+        _meleeWeapon = GetComponentInChildren<MeleeWeapon>();
+        _meleeWeapon.gameObject.SetActive(false);
+
         _animationRunParameter = Animator.StringToHash("Run");
         _animatorAttackParameter = Animator.StringToHash("Attack");
         _animatorDamagedParameter = Animator.StringToHash("Damaged");
+        _animatorArmedParameter = Animator.StringToHash("Armed");
+        _animatorUnarmedParameter = Animator.StringToHash("Unarmed");
     }
 
     // Use this for initialization
@@ -76,11 +87,12 @@ public class BaseAIUnit : BaseWorldCharacter
             _navMeshAgent.SetDestination(_followDetectionCharacter.gameObject.transform.position);
             _runBool = !(Vector3.Distance(_followDetectionCharacter.transform.position, transform.position) <=
                          _navMeshAgent.stoppingDistance);
+            
         }
         else
         {
-            _runBool = false;
             _navMeshAgent.SetDestination(_navMeshAgent.transform.position);
+            _runBool = false;
         }
     }
 
@@ -159,7 +171,23 @@ public class BaseAIUnit : BaseWorldCharacter
         {
             _followDetectionCharacter = character;
             _action = CharacterAction.Follow;
+
+            if (character == null)
+            {
+                _animator.SetTrigger(_animatorUnarmedParameter);
+                _weaponArmed = false;
+            }
+            else
+            {
+                _animator.SetTrigger(_animatorArmedParameter);
+                _weaponArmed = true;
+            }
         }
+    }
+
+    public void SetWeaponActive()
+    {
+        _meleeWeapon.gameObject.SetActive(_weaponArmed);
     }
 
     public void AttackDetectionCharacter(BaseWorldCharacter character)
@@ -169,5 +197,10 @@ public class BaseAIUnit : BaseWorldCharacter
             _attackDetectionCharacter = character;
             _action = CharacterAction.Attack;
         }
+    }
+
+    public override bool IsAiming()
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class AttackCommand : BaseCommand
 {
@@ -17,13 +18,18 @@ public class AttackCommand : BaseCommand
         
     }
 
-	//// Use this for initialization
-	//void Start () {
-	
-	//}
-	
-	//// Update is called once per frame
-	//void Update () {
-	
-	//}
+    //// Use this for initialization
+    //void Start () {
+
+    //}
+
+    //// Update is called once per frame
+    //void Update () {
+
+    //}
+
+    public override void Execute()
+    {
+        throw new NotImplementedException();
+    }
 }

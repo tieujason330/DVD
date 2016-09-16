@@ -26,9 +26,9 @@ public class RangedWeapon : BaseWeapon
 	
 	// Update is called once per frame
 	void Update () {
-        Vector3 forward = transform.TransformDirection(Vector3.forward * 2);
-        Debug.DrawRay(transform.position, forward, Color.green);
-        if (_myCharacter.IsAttacking())
+        //Vector3 forward = transform.TransformDirection(Vector3.forward * 2);
+        //Debug.DrawRay(transform.position, forward, Color.green);
+        if (_myCharacter.IsAttacking() && _myCharacter.IsAiming())
 	    {
 	        Projectile projectile = TakeProjectile();
 	        if (projectile != null)

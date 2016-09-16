@@ -4,11 +4,11 @@ using System.Collections;
 public class CharacterCanvas : MonoBehaviour
 {
 
-    private Camera _mainCamera;
+    public Camera _mainCamera;
 
     void Awake()
     {
-        _mainCamera = GameObject.FindGameObjectWithTag(Consts.TAG_MAIN_CAMERA).GetComponent<Camera>();
+        //_mainCamera = GameObject.FindGameObjectWithTag(Consts.TAG_MAIN_CAMERA).GetComponent<Camera>();
     }
 
     // Use this for initialization

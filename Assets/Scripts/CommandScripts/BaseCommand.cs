@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseCommand
+public abstract class BaseCommand
 {
     public CommandType _commandType;
 
     public BaseCommand()
     {
+        
     }
 
     //// Use this for initialization
@@ -18,4 +19,6 @@ public class BaseCommand
     //void Update () {
 
     //}
+
+    public abstract void Execute();
 }
