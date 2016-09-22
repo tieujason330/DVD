@@ -6,7 +6,6 @@ public class AttackStateBehavior : StateMachineBehaviour
 {
 
     private PlayerCharacter _player;
-    public bool _attackButtonPressed;
     public bool _hasAttacked;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -18,9 +17,8 @@ public class AttackStateBehavior : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (_hasAttacked) return;
-
-        _attackButtonPressed = Input.GetButtonDown("Attack");
-        if (_attackButtonPressed)
+        
+        if (_player._attackButtonPressed)
         {
             _player.MeleePressedInState(MeleeState.AttackState);
             _hasAttacked = true;

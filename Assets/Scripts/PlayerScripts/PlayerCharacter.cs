@@ -140,7 +140,8 @@ public class PlayerCharacter : BaseWorldCharacter
 		{
             MovementManagement (_h, _v, true, _sprint);
 			JumpManagement ();
-		    //AttackManagement();
+		    //OverrideAnimationTest();
+
 		}
 	}
 
@@ -191,17 +192,27 @@ public class PlayerCharacter : BaseWorldCharacter
 		}
 	}
 
+    #region Attack logic
+
+    private int count = 0;
     void OverrideAnimationTest()
     {
+        if (count > 0) return;
+        count++;
         RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
         AnimatorOverrideController over = new AnimatorOverrideController();
         over.runtimeAnimatorController = runtime;
 
-        over["Idle"] = _animationClips[0];
+        string animName = "MeleeAttack0";
+
+        for (int i = 0; i < _animationClips.Length; i++)
+        {
+            over[animName + (i + 1)] = _animationClips[i];
+        }
+
+
         _animator.runtimeAnimatorController = over;
     }
-
-    #region Attack logic
 
     public void MeleeNotPressedInState(MeleeState state = MeleeState.UndeterminedState)
     {
