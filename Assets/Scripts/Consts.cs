@@ -11,6 +11,14 @@ public static class Consts {
     public const string TAG_PLAYER = "Player";
 }
 
+public enum MeleeState
+{
+    AttackState,
+    BufferState,
+    IdleState,
+    UndeterminedState
+}
+
 public enum Faction
 {
     Player,

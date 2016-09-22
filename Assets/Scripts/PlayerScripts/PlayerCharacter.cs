@@ -34,7 +34,6 @@ public class PlayerCharacter : BaseWorldCharacter
     private int _meleeEquipped;
     private int _meleeAttackBool;
     private int _meleeAttackComboCounterInt;
-    private int _meleeAttackComboMaxInt;
     private int _damagedTrigger;
 	private Transform _cameraTransform;
 
@@ -46,7 +45,7 @@ public class PlayerCharacter : BaseWorldCharacter
 	private bool _run;
 	private bool _sprint;
 
-    private bool _attackButtonPressed;
+    public bool _attackButtonPressed;
 	private bool _isMoving;
 
     public int _maxComboCount;
@@ -81,7 +80,6 @@ public class PlayerCharacter : BaseWorldCharacter
 	    _meleeEquipped = Animator.StringToHash("MeleeEquipped");
         _meleeAttackBool = Animator.StringToHash("MeleeAttack");
 	    _meleeAttackComboCounterInt = Animator.StringToHash("AttackComboCounter");
-	    _meleeAttackComboMaxInt = Animator.StringToHash("AttackComboMax");
 	    _damagedTrigger = Animator.StringToHash("Damaged");
 
 		// fly
@@ -119,7 +117,6 @@ public class PlayerCharacter : BaseWorldCharacter
 		_v = Input.GetAxis("MoveVertical");
 
 	    _attackButtonPressed = Input.GetButtonDown("Attack");
-        //print(_attackButtonPressed);
         _run = Input.GetButton ("Run");
 		_sprint = Input.GetButton ("Sprint");
 		_isMoving = Mathf.Abs(_h) > 0.1 || Mathf.Abs(_v) > 0.1;
@@ -135,6 +132,7 @@ public class PlayerCharacter : BaseWorldCharacter
 		_animator.SetBool (_flyBool, _fly);
 		GetComponent<Rigidbody>().useGravity = !_fly;
 		_animator.SetBool (_groundedBool, IsGrounded ());
+
 		if(_fly)
 			FlyManagement(_h,_v);
 
@@ -142,7 +140,7 @@ public class PlayerCharacter : BaseWorldCharacter
 		{
             MovementManagement (_h, _v, true, _sprint);
 			JumpManagement ();
-		    AttackManagement();
+		    //AttackManagement();
 		}
 	}
 
@@ -193,7 +191,6 @@ public class PlayerCharacter : BaseWorldCharacter
 		}
 	}
 
-
     void OverrideAnimationTest()
     {
         RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
@@ -204,77 +201,50 @@ public class PlayerCharacter : BaseWorldCharacter
         _animator.runtimeAnimatorController = over;
     }
 
-    void AttackManagement()
+    #region Attack logic
+
+    public void MeleeNotPressedInState(MeleeState state = MeleeState.UndeterminedState)
     {
-        AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-
-        //Enable combo timer if we are in a buffer state and haven't clicked attack
-        if (!_comboTimer.gameObject.activeSelf && 
-            _attackComboCounter > 0 &&
-            currentAnimStateInfo.IsName("MeleeBuffer" + _attackComboCounter) &&
-            !_attackButtonPressed)
+        if (state == MeleeState.IdleState)
         {
-            ResetComboTimer(currentAnimStateInfo.length);
+            _attackComboCounter = 0;
+            _attackComboPoints = 0;
         }
 
-        if (_attackButtonPressed)
-        {
+        UpdateAttackFields();
+    }
 
-            bool clickedDuringCurrentAndPreviousBuffer;
-            if (_attackComboCounter == 0)
-            {
-                clickedDuringCurrentAndPreviousBuffer = _previousAnimationStateAttackClicked.fullPathHash == 0 ||
-                                                        _previousAnimationStateAttackClicked.IsName("MeleeBuffer" + _maxComboCount);
-            }
+    public void MeleePressedInState(MeleeState state)
+    {
+        if (state == MeleeState.AttackState)
+        {
+            _attackComboPoints = 0;
+        }
+        else if (state == MeleeState.BufferState)
+        {
+            if (_attackComboCounter >= _maxComboCount)
+                _attackComboCounter = 1;
             else
-            {
-                string currentBuffer = "MeleeBuffer" + _attackComboCounter;
-                string previousBuffer = "MeleeBuffer" + (_attackComboCounter - 1);
-                clickedDuringCurrentAndPreviousBuffer = _attackComboCounter == 1 
-                    ? currentAnimStateInfo.IsName(currentBuffer) && (_previousAnimationStateAttackClicked.IsName(previousBuffer) || _previousAnimationStateAttackClicked.IsName("MeleeBuffer6"))
-                    : currentAnimStateInfo.IsName(currentBuffer) && _previousAnimationStateAttackClicked.IsName(previousBuffer);
-            }
+                _attackComboCounter++;
 
-            if (clickedDuringCurrentAndPreviousBuffer)
-            {
-                if (_attackComboCounter >= _maxComboCount)
-                    _attackComboCounter = 1;
-                else
-                    _attackComboCounter++;
-
-                if (_attackComboPoints < _maxComboCount)
-                    _attackComboPoints++;
-            }
-            else
-            {
-                //if clicking attack during an attack animation - reset combo points
-                string currentMeleeAttack = "MeleeAttack" + _attackComboCounter;
-                if (currentAnimStateInfo.IsName(currentMeleeAttack))
-                {
-                    _attackComboCounter = _attackComboPoints = 1;
-                }
-            }
-
-            _previousAnimationStateAttackClicked = currentAnimStateInfo;
-
-            if (_comboTimer.gameObject.activeSelf)
-                DisableComboTimer();
+            if (_attackComboPoints < _maxComboCount)
+                _attackComboPoints++;
         }
 
-        //if we didn't click attack or went back into initial buffer - reset everything
-        else if (!_attackButtonPressed && currentAnimStateInfo.IsName("MeleeBuffer0"))
-        {
-            _attackComboCounter = _attackComboPoints = 0;
-            _previousAnimationStateAttackClicked = new AnimatorStateInfo();
-        }
+        UpdateAttackFields();
+    }
 
+    public void UpdateAttackFields()
+    {
         _comboPoints.SetComboPoints(_attackComboPoints, _maxComboCount);
-        _animator.SetInteger(_meleeAttackComboMaxInt, _maxComboCount);
+        
         _animator.SetInteger(_meleeAttackComboCounterInt, _attackComboCounter);
         _animator.SetBool(_meleeAttackBool, _attackButtonPressed);
     }
 
-	void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
+    #endregion
+
+    void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
 	{
 		Rotating(-vertical, -horizontal);
 

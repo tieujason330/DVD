@@ -1651,7 +1651,7 @@ MonoBehaviour:
   _speedDampTime: 0.1
   jumpHeight: 5
   jumpCooldown: 1
-  _maxComboCount: 4
+  _maxComboCount: 6
   _attackComboCounter: 0
   _attackComboPoints: 0
   _initialComboTimer: 1.6
