@@ -11,6 +11,8 @@ public class BufferStateBehavior : StateMachineBehaviour
     {
         _player = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCharacter>();
         _hasAttacked = false;
+
+        _player.MeleeInitializeBufferTime();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -24,7 +26,11 @@ public class BufferStateBehavior : StateMachineBehaviour
         }
         else
         {
-            _player.MeleeNotPressedInState();
+            _player.MeleeNotPressedInState(MeleeState.BufferState);
         }
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
     }
 }

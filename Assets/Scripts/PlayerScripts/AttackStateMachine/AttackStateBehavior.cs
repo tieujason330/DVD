@@ -12,6 +12,7 @@ public class AttackStateBehavior : StateMachineBehaviour
     {
         _player = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCharacter>();
         _hasAttacked = false;
+        _player.SetIsAttacking(true);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -23,5 +24,10 @@ public class AttackStateBehavior : StateMachineBehaviour
             _player.MeleePressedInState(MeleeState.AttackState);
             _hasAttacked = true;
         }
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        _player.SetIsAttacking(false);
     }
 }

@@ -35,6 +35,7 @@ public class PlayerCharacter : BaseWorldCharacter
     private int _meleeAttackBool;
     private int _meleeAttackComboCounterInt;
     private int _damagedTrigger;
+    private int _meleeComboTimedOutBool;
 	private Transform _cameraTransform;
 
 	private float _h;
@@ -56,6 +57,8 @@ public class PlayerCharacter : BaseWorldCharacter
     public float _currentComboTimer;
     private ComboTimer _comboTimer;
     private ComboPoints _comboPoints;
+    private bool _isAttacking;
+    private float _comboTimerDuration = 3.0f;
 
     public AnimationClip[] _animationClips;
 
@@ -81,6 +84,7 @@ public class PlayerCharacter : BaseWorldCharacter
         _meleeAttackBool = Animator.StringToHash("MeleeAttack");
 	    _meleeAttackComboCounterInt = Animator.StringToHash("AttackComboCounter");
 	    _damagedTrigger = Animator.StringToHash("Damaged");
+	    _meleeComboTimedOutBool = Animator.StringToHash("ComboTimedOut");
 
 		// fly
 		_flyBool = Animator.StringToHash ("Fly");
@@ -152,27 +156,6 @@ public class PlayerCharacter : BaseWorldCharacter
 		GetComponent<Rigidbody>().AddForce(direction * _flySpeed * 100 * (_sprint?_sprintFactor:1));
 	}
 
-    void ComboTimerTick()
-    {
-        _currentComboTimer -= Time.deltaTime;
-        if (_currentComboTimer < 0.0f)
-        {
-            DisableComboTimer();
-        }
-    }
-
-    void ResetComboTimer(float duration)
-    {
-        _currentComboTimer = _initialComboTimer = duration;
-        _comboTimer.gameObject.SetActive(true);
-    }
-
-    void DisableComboTimer()
-    {
-        _currentComboTimer = 0.0f;
-        _comboTimer.gameObject.SetActive(false);
-    }
-
 	void JumpManagement()
 	{
 		if (GetComponent<Rigidbody>().velocity.y < 10) // already jumped
@@ -194,6 +177,32 @@ public class PlayerCharacter : BaseWorldCharacter
 
     #region Attack logic
 
+    void ComboTimerTick()
+    {
+        _currentComboTimer -= Time.deltaTime;
+        if (_currentComboTimer < 0.0f)
+        {
+            DisableComboTimer();
+        }
+    }
+
+    void ResetComboTimer()
+    {
+        if (!_comboTimer.gameObject.activeSelf)
+        {
+            _currentComboTimer = _initialComboTimer = _comboTimerDuration;
+            _comboTimer.gameObject.SetActive(true);
+            _animator.SetBool(_meleeComboTimedOutBool, false);
+        }
+    }
+
+    void DisableComboTimer()
+    {
+        _currentComboTimer = 0.0f;
+        _comboTimer.gameObject.SetActive(false);
+        _animator.SetBool(_meleeComboTimedOutBool, true);
+    }
+
     private int count = 0;
     void OverrideAnimationTest()
     {
@@ -214,8 +223,17 @@ public class PlayerCharacter : BaseWorldCharacter
         _animator.runtimeAnimatorController = over;
     }
 
+    public void MeleeInitializeBufferTime()
+    {
+        ResetComboTimer();
+    }
+
     public void MeleeNotPressedInState(MeleeState state = MeleeState.UndeterminedState)
     {
+        //if (state == MeleeState.BufferState)
+        //{
+        //    ResetComboTimer(animStateInfo.length);
+        //}
         if (state == MeleeState.IdleState)
         {
             _attackComboCounter = 0;
@@ -240,6 +258,8 @@ public class PlayerCharacter : BaseWorldCharacter
 
             if (_attackComboPoints < _maxComboCount)
                 _attackComboPoints++;
+
+            DisableComboTimer();
         }
 
         UpdateAttackFields();
@@ -256,7 +276,9 @@ public class PlayerCharacter : BaseWorldCharacter
     #endregion
 
     void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
-	{
+    {
+        if (IsAttacking()) return;
+
 		Rotating(-vertical, -horizontal);
 
 		if(_isMoving)
@@ -357,17 +379,23 @@ public class PlayerCharacter : BaseWorldCharacter
 		return _sprint && !_aim && (_isMoving);
 	}
 
+    public void SetIsAttacking(bool attacking)
+    {
+        _isAttacking = attacking;
+    }
+
     public override bool IsAttacking()
     {
-        //value of 1 is end of anim
-        //value of 0.5 is end of anim
-        AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-        if (animStateInfo.IsName("MeleeAttack" + _attackComboCounter))
-        {
-            return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
-        }
-        //Added AttackLoopBuffer in Animator to allow return false during loop
-        return false;
+        return _isAttacking;
+        ////value of 1 is end of anim
+        ////value of 0.5 is end of anim
+        //AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
+        //if (animStateInfo.IsName("MeleeAttack" + _attackComboCounter))
+        //{
+        //    return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
+        //}
+        ////Added AttackLoopBuffer in Animator to allow return false during loop
+        //return false;
     }
 
     public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)

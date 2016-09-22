@@ -557,7 +557,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0.000019073486, y: -0.000015258789}
+  m_AnchoredPosition: {x: -1.7, y: -0.000015258789}
   m_SizeDelta: {x: 140, y: 10}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &174602490
@@ -1651,6 +1651,7 @@ MonoBehaviour:
   _speedDampTime: 0.1
   jumpHeight: 5
   jumpCooldown: 1
+  _attackButtonPressed: 0
   _maxComboCount: 6
   _attackComboCounter: 0
   _attackComboPoints: 0
@@ -1658,6 +1659,11 @@ MonoBehaviour:
   _currentComboTimer: 0
   _animationClips:
   - {fileID: 7400000, guid: 035625d55a1b6ae4da68882980d3bf30, type: 2}
+  - {fileID: 7400000, guid: 2431d8001e528af44accd052e31a5957, type: 2}
+  - {fileID: 7400000, guid: 38e8359284dce3841ac07a23ae94e660, type: 2}
+  - {fileID: 7400000, guid: 47fa82a20ac6395438cfe0f103ea13aa, type: 2}
+  - {fileID: 7400000, guid: 827a05e27b7ec034a8430c077c7947f4, type: 2}
+  - {fileID: 7400000, guid: ce67595715d4efc47bda8e8bc740e203, type: 2}
 --- !u!54 &555158056
 Rigidbody:
   m_ObjectHideFlags: 0
