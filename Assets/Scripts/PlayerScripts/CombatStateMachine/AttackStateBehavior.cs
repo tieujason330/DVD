@@ -19,7 +19,7 @@ public class AttackStateBehavior : StateMachineBehaviour
     {
         if (_hasAttacked) return;
         
-        if (_player._attackButtonPressed)
+        if (_player._inputAttack)
         {
             _player.MeleePressedInState(MeleeState.AttackState);
             _hasAttacked = true;

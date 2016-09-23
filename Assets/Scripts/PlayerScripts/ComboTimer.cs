@@ -18,7 +18,7 @@ public class ComboTimer : MonoBehaviour
     void Start()
     {
         if (_myCharacter != null)
-            _currentBarValue = _myCharacter._currentComboTimer / _myCharacter._initialComboTimer;
+            _currentBarValue = _myCharacter._attackCurrentComboTimer / _myCharacter._attackInitialComboTimer;
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class ComboTimer : MonoBehaviour
     {
         if (_myCharacter != null)
         {
-            float newBarValue = _myCharacter._currentComboTimer / _myCharacter._initialComboTimer;
+            float newBarValue = _myCharacter._attackCurrentComboTimer / _myCharacter._attackInitialComboTimer;
             _currentBarValue = newBarValue;
             SetComboTime();
         }

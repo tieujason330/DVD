@@ -5,188 +5,184 @@ using System.Collections.Generic;
 
 public class PlayerCharacter : BaseWorldCharacter
 {
-    public float _walkSpeed = 0.15f;
-	public float _runSpeed = 1.0f;
-	public float _sprintSpeed = 2.0f;
-	public float _flySpeed = 4.0f;
+    public float _movementWalkSpeed = 0.15f;
+	public float _movementRunSpeed = 1.0f;
+	public float _movementSprintSpeed = 2.0f;
+	public float _movementFlySpeed = 4.0f;
+	public float _movementTurnSmoothing = 3.0f;
+	public float _movementAimTurnSmoothing = 15.0f;
+	public float _movementSpeedDampTime = 0.1f;
+	public float _movementJumpHeight = 5.0f;
+	public float _movementJumpCooldown = 1.0f;
 
-	public float _turnSmoothing = 3.0f;
-	public float _aimTurnSmoothing = 15.0f;
-	public float _speedDampTime = 0.1f;
+	private float _movementTimeToNextJump = 0;
+    private float _movementSpeed;
+	private Vector3 _movementLastDirection;
+    private bool _movementFly = false;
+    private float _movementDistanceToGround;
+    private float _movementSprintFactor;
 
-	public float jumpHeight = 5.0f;
-	public float jumpCooldown = 1.0f;
+    private Animator _animator;
+	private int _animatorSpeedParameter;
+	private int _animatorJumpParameter;
+	private int _animatorHorizontalParameter;
+	private int _animatorVerticalParameter;
+	private int _animatorAimParameter;
+	private int _animatorFlyParameter;
+	private int _animtorGroundedParameter;
+    private int _animatorMeleeEquippedParameter;
+    private int _animatorMeleeAttackParameter;
+    private int _animtorAttackComboCounterParameter;
+    private int _animtorDamagedParameter;
+    private int _animtorRollParameter;
+    private int _animtorComboTimerOnParameter;
 
-	private float _timeToNextJump = 0;
+	private float _inputHorizontal;
+	private float _inputVertical;
+	private bool _inputAim;
+	private bool _inputRun;
+	private bool _inputSprint;
+    private bool _inputRoll;
+    public bool _inputAttack;
 
-    private float _speed;
 
-	private Vector3 _lastDirection;
-
-	private Animator _animator;
-	private int _speedFloat;
-	private int _jumpBool;
-	private int _hFloat;
-	private int _vFloat;
-	private int _aimBool;
-	private int _flyBool;
-	private int _groundedBool;
-    private int _meleeEquipped;
-    private int _meleeAttackBool;
-    private int _meleeAttackComboCounterInt;
-    private int _damagedTrigger;
-    private int _rollTrigger;
-    private int _meleeComboTimedOutBool;
-	private Transform _cameraTransform;
-
-	private float _h;
-	private float _v;
-
-	private bool _aim;
-
-	private bool _run;
-	private bool _sprint;
-    private bool _roll;
-
-    public bool _attackButtonPressed;
-	private bool _isMoving;
-
-    public int _maxComboCount;
-    public int _attackComboCounter;
-    public int _attackComboPoints;
-    private AnimatorStateInfo _previousAnimationStateAttackClicked;
-    public float _initialComboTimer;
-    public float _currentComboTimer;
-    private ComboTimer _comboTimer;
-    private ComboPoints _comboPoints;
+    private int _attackMaxComboCount = 6;
+    private int _attackComboCounter;
+    private int _attackComboPoints;
+    public float _attackInitialComboTimer;
+    public float _attackCurrentComboTimer;
+    private ComboTimer _attackComboTimerComponent;
+    private ComboPoints _attackComboPointsComponent;
     private bool _isAttacking;
-    private float _comboTimerDuration = 0.5f;
+    private float _attackComboTimerDuration = 0.5f;
 
     public AnimationClip[] _animationClips;
 
-	// fly
-	private bool _fly = false;
-	private float _distToGround;
-	private float _sprintFactor;
+    private Transform _cameraTransform;
 
 	void Awake()
 	{
-		_animator = GetComponent<Animator> ();
 		_cameraTransform = Camera.main.transform;
-	    _comboTimer = GetComponentInChildren<ComboTimer>();
-        _comboTimer.gameObject.SetActive(false);
-	    _comboPoints = GetComponentInChildren<ComboPoints>();
-
-		_speedFloat = Animator.StringToHash("Speed");
-		_jumpBool = Animator.StringToHash("Jump");
-		_hFloat = Animator.StringToHash("H");
-		_vFloat = Animator.StringToHash("V");
-		_aimBool = Animator.StringToHash("Aim");
-	    _meleeEquipped = Animator.StringToHash("MeleeEquipped");
-        _meleeAttackBool = Animator.StringToHash("MeleeAttack");
-	    _meleeAttackComboCounterInt = Animator.StringToHash("AttackComboCounter");
-	    _damagedTrigger = Animator.StringToHash("Damaged");
-	    _meleeComboTimedOutBool = Animator.StringToHash("ComboTimedOut");
-	    _rollTrigger = Animator.StringToHash("Roll");
-
-		// fly
-		_flyBool = Animator.StringToHash ("Fly");
-		_groundedBool = Animator.StringToHash("Grounded");
-		_distToGround = GetComponent<Collider>().bounds.extents.y;
-		_sprintFactor = _sprintSpeed / _runSpeed;
-
-	    _currentHealth = _initialHealth;
-
-	    _faction = Faction.Player;
-	    _status = CharacterStatus.Alive;
-
-	    _currentComboTimer = _initialComboTimer;
+	   
+	    InitializeAnimatorLogic();
+	    InitializeComboLogic();
+	    InitializePlayerLogic();
 	}
 
     void Start()
     {
-        //test
-        //gameObject.AddComponent<Soldier>().InitializeRole();
     }
-
-	bool IsGrounded() {
-		return Physics.Raycast(transform.position, -Vector3.up, _distToGround + 0.1f);
-	}
 
 	void Update()
 	{
         base.Update();
-		// fly
-		if(Input.GetButtonDown ("Fly"))
-			_fly = !_fly;
-		_aim = Input.GetButton("Aim");
-		_h = Input.GetAxis("MoveHorizontal");
-		_v = Input.GetAxis("MoveVertical");
-
-	    _attackButtonPressed = Input.GetButtonDown("Attack");
-        _run = Input.GetButton ("Run");
-		_sprint = Input.GetButton ("Sprint");
-		_isMoving = Mathf.Abs(_h) > 0.1 || Mathf.Abs(_v) > 0.1;
-	    _roll = Input.GetButtonDown("Roll");
-
-		_animator.SetBool (_aimBool, IsAiming());
-		_animator.SetFloat(_hFloat, _h);
-		_animator.SetFloat(_vFloat, _v);
-
-        if (_comboTimer.gameObject.activeSelf)
-	        ComboTimerTick();
-
-		// Fly
-		_animator.SetBool (_flyBool, _fly);
-		GetComponent<Rigidbody>().useGravity = !_fly;
-		_animator.SetBool (_groundedBool, IsGrounded ());
-
-		if(_fly)
-			FlyManagement(_h,_v);
-
-		else
-		{
-            MovementManagement (_h, _v, true, _sprint);
-			JumpManagement ();
-		    //OverrideAnimationTest();
-            if (_roll)
-                _animator.SetTrigger(_rollTrigger);
-
-		}
+		
+        Update_InputLogic();
+        Update_AnimatorLogic();
+	    Update_ComboTimerLogic();
 	}
 
-	// fly
-	void FlyManagement(float horizontal, float vertical)
-	{
-		Vector3 direction = Rotating(horizontal, vertical);
-		GetComponent<Rigidbody>().AddForce(direction * _flySpeed * 100 * (_sprint?_sprintFactor:1));
-	}
+    #region Initialization
 
-	void JumpManagement()
-	{
-		if (GetComponent<Rigidbody>().velocity.y < 10) // already jumped
-		{
-			_animator.SetBool (_jumpBool, false);
-			if(_timeToNextJump > 0)
-				_timeToNextJump -= Time.deltaTime;
-		}
-		if (Input.GetButtonDown ("Jump"))
-		{
-			_animator.SetBool(_jumpBool, true);
-			if(_speed > 0 && _timeToNextJump <= 0 && !_aim)
-			{
-				GetComponent<Rigidbody>().velocity = new Vector3(0, jumpHeight, 0);
-				_timeToNextJump = jumpCooldown;
-			}
-		}
-	}
+    void InitializeAnimatorLogic()
+    {
+        _animator = GetComponent<Animator>();
 
-    #region Attack logic
+        _animatorSpeedParameter = Animator.StringToHash("Speed");
+        _animatorJumpParameter = Animator.StringToHash("Jump");
+        _animatorHorizontalParameter = Animator.StringToHash("H");
+        _animatorVerticalParameter = Animator.StringToHash("V");
+        _animatorAimParameter = Animator.StringToHash("Aim");
+        _animatorMeleeEquippedParameter = Animator.StringToHash("MeleeEquipped");
+        _animatorMeleeAttackParameter = Animator.StringToHash("MeleeAttack");
+        _animtorAttackComboCounterParameter = Animator.StringToHash("AttackComboCounter");
+        _animtorDamagedParameter = Animator.StringToHash("Damaged");
+        _animtorComboTimerOnParameter = Animator.StringToHash("ComboTimerOn");
+        _animtorRollParameter = Animator.StringToHash("Roll");
+        _animatorFlyParameter = Animator.StringToHash("Fly");
+        _animtorGroundedParameter = Animator.StringToHash("Grounded");
+    }
+
+    void InitializeComboLogic()
+    {
+        _attackComboTimerComponent = GetComponentInChildren<ComboTimer>();
+        _attackComboTimerComponent.gameObject.SetActive(false);
+        _attackComboPointsComponent = GetComponentInChildren<ComboPoints>();
+        _attackCurrentComboTimer = _attackInitialComboTimer;
+    }
+
+    void InitializePlayerLogic()
+    {
+
+        _movementDistanceToGround = GetComponent<Collider>().bounds.extents.y;
+        _movementSprintFactor = _movementSprintSpeed / _movementRunSpeed;
+        _currentHealth = _initialHealth;
+        _faction = Faction.Player;
+        _status = CharacterStatus.Alive;
+    }
+
+    #endregion
+
+    #region Input logic
+
+    void Update_InputLogic()
+    {
+        // fly
+        if (Input.GetButtonDown("Fly"))
+            _movementFly = !_movementFly;
+        _inputAim = Input.GetButton("Aim");
+        _inputHorizontal = Input.GetAxis("MoveHorizontal");
+        _inputVertical = Input.GetAxis("MoveVertical");
+        _inputAttack = Input.GetButtonDown("Attack");
+        _inputRun = Input.GetButton("Run");
+        _inputSprint = Input.GetButton("Sprint");
+        _inputRoll = Input.GetButtonDown("Roll");
+    }
+
+    #endregion
+
+    #region Animator logic
+
+    void Update_AnimatorLogic()
+    {
+        _animator.SetBool(_animatorAimParameter, IsAiming());
+        _animator.SetFloat(_animatorHorizontalParameter, _inputHorizontal);
+        _animator.SetFloat(_animatorVerticalParameter, _inputVertical);
+        _animator.SetBool(_animatorFlyParameter, _movementFly);
+        GetComponent<Rigidbody>().useGravity = !_movementFly;
+        _animator.SetBool(_animtorGroundedParameter, IsGrounded());
+
+        if (_movementFly)
+            FlyManagement(_inputHorizontal, _inputVertical);
+        else
+        {
+            MovementManagement(_inputHorizontal, _inputVertical, true, _inputSprint);
+            JumpManagement();
+            CombatManagement();
+            //OverrideAnimationTest();
+        }
+    }
+
+    #endregion
+
+    #region Combat logic
+
+    void Update_ComboTimerLogic()
+    {
+        if (_attackComboTimerComponent.gameObject.activeSelf)
+            ComboTimerTick();
+    }
+
+    void CombatManagement()
+    {
+        if(_inputRoll)
+            _animator.SetTrigger(_animtorRollParameter);
+    }
 
     void ComboTimerTick()
     {
-        _currentComboTimer -= Time.deltaTime;
-        if (_currentComboTimer < 0.0f)
+        _attackCurrentComboTimer -= Time.deltaTime;
+        if (_attackCurrentComboTimer < 0.0f)
         {
             DisableComboTimer();
         }
@@ -194,19 +190,19 @@ public class PlayerCharacter : BaseWorldCharacter
 
     void ResetComboTimer()
     {
-        if (!_comboTimer.gameObject.activeSelf)
+        if (!_attackComboTimerComponent.gameObject.activeSelf)
         {
-            _currentComboTimer = _initialComboTimer = _comboTimerDuration;
-            _comboTimer.gameObject.SetActive(true);
-            _animator.SetBool(_meleeComboTimedOutBool, false);
+            _attackCurrentComboTimer = _attackInitialComboTimer = _attackComboTimerDuration;
+            _attackComboTimerComponent.gameObject.SetActive(true);
+            _animator.SetBool(_animtorComboTimerOnParameter, true);
         }
     }
 
     void DisableComboTimer()
     {
-        _currentComboTimer = 0.0f;
-        _comboTimer.gameObject.SetActive(false);
-        _animator.SetBool(_meleeComboTimedOutBool, true);
+        _attackCurrentComboTimer = 0.0f;
+        _attackComboTimerComponent.gameObject.SetActive(false);
+        _animator.SetBool(_animtorComboTimerOnParameter, false);
     }
 
     private int count = 0;
@@ -265,12 +261,12 @@ public class PlayerCharacter : BaseWorldCharacter
         }
         else if (state == MeleeState.BufferState)
         {
-            if (_attackComboCounter >= _maxComboCount)
+            if (_attackComboCounter >= _attackMaxComboCount)
                 _attackComboCounter = 1;
             else
                 _attackComboCounter++;
 
-            if (_attackComboPoints < _maxComboCount)
+            if (_attackComboPoints < _attackMaxComboCount)
                 _attackComboPoints++;
 
             DisableComboTimer();
@@ -281,117 +277,11 @@ public class PlayerCharacter : BaseWorldCharacter
 
     public void UpdateAttackFields()
     {
-        _comboPoints.SetComboPoints(_attackComboPoints, _maxComboCount);
+        _attackComboPointsComponent.SetComboPoints(_attackComboPoints, _attackMaxComboCount);
         
-        _animator.SetInteger(_meleeAttackComboCounterInt, _attackComboCounter);
-        _animator.SetBool(_meleeAttackBool, _attackButtonPressed);
+        _animator.SetInteger(_animtorAttackComboCounterParameter, _attackComboCounter);
+        _animator.SetBool(_animatorMeleeAttackParameter, _inputAttack);
     }
-
-    #endregion
-
-    void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
-    {
-        if (IsAttacking()) return;
-
-		Rotating(-vertical, -horizontal);
-
-		if(_isMoving)
-		{
-			if(sprinting)
-			{
-				_speed = _sprintSpeed;
-			}
-			else if (running)
-			{
-				_speed = _runSpeed;
-			}
-			else
-			{
-				_speed = _walkSpeed;
-			}
-
-			_animator.SetFloat(_speedFloat, _speed, _speedDampTime, Time.deltaTime);
-		}
-		else
-		{
-			_speed = 0f;
-			_animator.SetFloat(_speedFloat, 0f);
-		}
-		GetComponent<Rigidbody>().AddForce(Vector3.forward*_speed);
-	}
-	Vector3 Rotating(float horizontal, float vertical)
-	{
-        Vector3 forward = _cameraTransform.TransformDirection(Vector3.forward);
-        if (!_fly)
-            forward.y = 0.0f;
-        forward = forward.normalized;
-
-        Vector3 right = new Vector3(forward.z, 0, -forward.x);
-
-        Vector3 targetDirection;
-
-        float finalTurnSmoothing;
-
-        if (IsAiming())
-        {
-            targetDirection = forward;
-            finalTurnSmoothing = _aimTurnSmoothing;
-        }
-        else
-        {
-            targetDirection = forward * vertical + right * horizontal;
-            finalTurnSmoothing = _turnSmoothing;
-        }
-
-        //if ((_isMoving && targetDirection != Vector3.zero) || IsAiming())
-        //{
-        //    Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
-        //    // fly
-        //    if (_fly)
-        //        targetRotation *= Quaternion.Euler(90, 0, 0);
-
-        //    Quaternion newRotation = Quaternion.Slerp(GetComponent<Rigidbody>().rotation, targetRotation, finalTurnSmoothing * Time.deltaTime);
-        //    GetComponent<Rigidbody>().MoveRotation(newRotation);
-        //    _lastDirection = targetDirection;
-        //}
-        ////idle - fly or grounded
-        //if (!(Mathf.Abs(_h) > 0.9 || Mathf.Abs(_v) > 0.9))
-        //{
-        //    Repositioning();
-        //}
-           
-        if (targetDirection.sqrMagnitude > 0.1f)
-            transform.LookAt(transform.position + targetDirection);
-
-        return targetDirection;
-	}	
-
-	private void Repositioning()
-	{
-		Vector3 repositioning = _lastDirection;
-		if(repositioning != Vector3.zero)
-		{
-			repositioning.y = 0;
-			Quaternion targetRotation = Quaternion.LookRotation (repositioning, Vector3.up);
-			Quaternion newRotation = Quaternion.Slerp(GetComponent<Rigidbody>().rotation, targetRotation, _turnSmoothing * Time.deltaTime);
-			GetComponent<Rigidbody>().MoveRotation (newRotation);
-		}
-	}
-
-	public bool IsFlying()
-	{
-		return _fly;
-	}
-
-	public override bool IsAiming()
-	{
-		return _aim && !_fly;
-	}
-
-	public bool IsSprinting()
-	{
-		return _sprint && !_aim && (_isMoving);
-	}
 
     public void SetIsAttacking(bool attacking)
     {
@@ -420,7 +310,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
     public override void TakeDamage(float damage)
     {
-        _animator.SetTrigger(_damagedTrigger);
+        _animator.SetTrigger(_animtorDamagedParameter);
         if (_currentHealth > damage)
         {
             _currentHealth -= damage;
@@ -432,8 +322,158 @@ public class PlayerCharacter : BaseWorldCharacter
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }
 
+    #endregion
+
+    #region Player movement logic
+
+    // fly
+    void FlyManagement(float horizontal, float vertical)
+    {
+        Vector3 direction = Rotating(horizontal, vertical);
+        GetComponent<Rigidbody>().AddForce(direction * _movementFlySpeed * 100 * (_inputSprint ? _movementSprintFactor : 1));
+    }
+
+    void JumpManagement()
+    {
+        if (GetComponent<Rigidbody>().velocity.y < 10) // already jumped
+        {
+            _animator.SetBool(_animatorJumpParameter, false);
+            if (_movementTimeToNextJump > 0)
+                _movementTimeToNextJump -= Time.deltaTime;
+        }
+        if (Input.GetButtonDown("Jump"))
+        {
+            _animator.SetBool(_animatorJumpParameter, true);
+            if (_movementSpeed > 0 && _movementTimeToNextJump <= 0 && !_inputAim)
+            {
+                GetComponent<Rigidbody>().velocity = new Vector3(0, _movementJumpHeight, 0);
+                _movementTimeToNextJump = _movementJumpCooldown;
+            }
+        }
+    }
+
+    void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
+    {
+        if (IsAttacking()) return;
+
+		Rotating(-vertical, -horizontal);
+
+		if(IsMoving())
+		{
+			if(sprinting)
+			{
+				_movementSpeed = _movementSprintSpeed;
+			}
+			else if (running)
+			{
+				_movementSpeed = _movementRunSpeed;
+			}
+			else
+			{
+				_movementSpeed = _movementWalkSpeed;
+			}
+
+			_animator.SetFloat(_animatorSpeedParameter, _movementSpeed, _movementSpeedDampTime, Time.deltaTime);
+		}
+		else
+		{
+			_movementSpeed = 0f;
+			_animator.SetFloat(_animatorSpeedParameter, 0f);
+		}
+		GetComponent<Rigidbody>().AddForce(Vector3.forward*_movementSpeed);
+	}
+
+	Vector3 Rotating(float horizontal, float vertical)
+	{
+        Vector3 forward = _cameraTransform.TransformDirection(Vector3.forward);
+        if (!_movementFly)
+            forward.y = 0.0f;
+        forward = forward.normalized;
+
+        Vector3 right = new Vector3(forward.z, 0, -forward.x);
+
+        Vector3 targetDirection;
+
+        float finalTurnSmoothing;
+
+        if (IsAiming())
+        {
+            targetDirection = forward;
+            finalTurnSmoothing = _movementAimTurnSmoothing;
+        }
+        else
+        {
+            targetDirection = forward * vertical + right * horizontal;
+            finalTurnSmoothing = _movementTurnSmoothing;
+        }
+
+        //if ((_isMoving && targetDirection != Vector3.zero) || IsAiming())
+        //{
+        //    Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+        //    // fly
+        //    if (_fly)
+        //        targetRotation *= Quaternion.Euler(90, 0, 0);
+
+        //    Quaternion newRotation = Quaternion.Slerp(GetComponent<Rigidbody>().rotation, targetRotation, finalTurnSmoothing * Time.deltaTime);
+        //    GetComponent<Rigidbody>().MoveRotation(newRotation);
+        //    _lastDirection = targetDirection;
+        //}
+        ////idle - fly or grounded
+        //if (!(Mathf.Abs(_h) > 0.9 || Mathf.Abs(_v) > 0.9))
+        //{
+        //    Repositioning();
+        //}
+           
+        if (targetDirection.sqrMagnitude > 0.1f)
+            transform.LookAt(transform.position + targetDirection);
+
+        return targetDirection;
+	}	
+
+	private void Repositioning()
+	{
+		Vector3 repositioning = _movementLastDirection;
+		if(repositioning != Vector3.zero)
+		{
+			repositioning.y = 0;
+			Quaternion targetRotation = Quaternion.LookRotation (repositioning, Vector3.up);
+			Quaternion newRotation = Quaternion.Slerp(GetComponent<Rigidbody>().rotation, targetRotation, _movementTurnSmoothing * Time.deltaTime);
+			GetComponent<Rigidbody>().MoveRotation (newRotation);
+		}
+	}
+
+    public bool IsFlying()
+    {
+        return _movementFly;
+    }
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, _movementDistanceToGround + 0.1f);
+    }
+
+    public bool IsSprinting()
+    {
+        return _inputSprint && !_inputAim && (IsMoving());
+    }
+
+    public bool IsMoving()
+    {
+        return Mathf.Abs(_inputHorizontal) > 0.1 || Mathf.Abs(_inputVertical) > 0.1;
+    }
+
+    public override bool IsAiming()
+    {
+        return _inputAim && !_movementFly;
+    }
+
+    #endregion
+
     public override void SetDestinationPosition(Vector3 destination)
     {
         throw new NotImplementedException();
     }
+
+
+
 }
