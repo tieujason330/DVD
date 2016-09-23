@@ -1,30 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IdleStateBehavior : StateMachineBehaviour
+public class ActiveAbilityStateBehavior : StateMachineBehaviour
 {
 
     private PlayerCharacter _player;
-    public bool _hasAttacked;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         _player = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCharacter>();
-        _hasAttacked = false;
+        _player.StopMeleeCombo(CombatState.ActiveAbilityState);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (_hasAttacked) return;
+    }
 
-        if (_player._inputAttack)
-        {
-            _player.MeleePressedInState(CombatState.BufferState);
-            _hasAttacked = true;
-        }
-        else
-        {
-            _player.MeleeNotPressedInState(CombatState.IdleState);
-        }
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
     }
 }

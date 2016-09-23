@@ -36,6 +36,7 @@ public class PlayerCharacter : BaseWorldCharacter
     private int _animtorDamagedParameter;
     private int _animtorRollParameter;
     private int _animtorComboTimerOnParameter;
+    private int _animatorActiveAbilityParameter;
 
 	private float _inputHorizontal;
 	private float _inputVertical;
@@ -44,6 +45,7 @@ public class PlayerCharacter : BaseWorldCharacter
 	private bool _inputSprint;
     private bool _inputRoll;
     public bool _inputAttack;
+    private bool _inputActiveAbility;
 
 
     private int _attackMaxComboCount = 6;
@@ -101,6 +103,7 @@ public class PlayerCharacter : BaseWorldCharacter
         _animtorRollParameter = Animator.StringToHash("Roll");
         _animatorFlyParameter = Animator.StringToHash("Fly");
         _animtorGroundedParameter = Animator.StringToHash("Grounded");
+        _animatorActiveAbilityParameter = Animator.StringToHash("ActiveAbility");
     }
 
     void InitializeComboLogic()
@@ -137,6 +140,7 @@ public class PlayerCharacter : BaseWorldCharacter
         _inputRun = Input.GetButton("Run");
         _inputSprint = Input.GetButton("Sprint");
         _inputRoll = Input.GetButtonDown("Roll");
+        _inputActiveAbility = Input.GetButtonDown("ActiveAbility");
     }
 
     #endregion
@@ -177,6 +181,21 @@ public class PlayerCharacter : BaseWorldCharacter
     {
         if(_inputRoll)
             _animator.SetTrigger(_animtorRollParameter);
+
+        ActiveAbilityManagement();
+    }
+
+    void ActiveAbilityManagement()
+    {
+        bool performAbility = false;
+
+        if (_inputActiveAbility && _attackComboPoints >= 2)
+        {
+            _attackComboPoints -= 2;
+            performAbility = true;
+        }
+
+        _animator.SetBool(_animatorActiveAbilityParameter, performAbility);
     }
 
     void ComboTimerTick()
@@ -225,11 +244,18 @@ public class PlayerCharacter : BaseWorldCharacter
         _animator.runtimeAnimatorController = over;
     }
 
-    public void CancelMeleeCombo()
+    public void StopMeleeCombo(CombatState state)
     {
+        if (state == CombatState.RollState)
+        {
+            _attackComboCounter = 0;
+            _attackComboPoints = 0;
+        }
+        else if (state == CombatState.ActiveAbilityState)
+        {
+        }
+
         DisableComboTimer();
-        _attackComboCounter = 0;
-        _attackComboPoints = 0;
         UpdateAttackFields();
     }
 
@@ -238,13 +264,13 @@ public class PlayerCharacter : BaseWorldCharacter
         ResetComboTimer();
     }
 
-    public void MeleeNotPressedInState(MeleeState state = MeleeState.UndeterminedState)
+    public void MeleeNotPressedInState(CombatState state = CombatState.UndeterminedState)
     {
         //if (state == MeleeState.BufferState)
         //{
         //    ResetComboTimer(animStateInfo.length);
         //}
-        if (state == MeleeState.IdleState)
+        if (state == CombatState.IdleState)
         {
             _attackComboCounter = 0;
             _attackComboPoints = 0;
@@ -253,13 +279,13 @@ public class PlayerCharacter : BaseWorldCharacter
         UpdateAttackFields();
     }
 
-    public void MeleePressedInState(MeleeState state)
+    public void MeleePressedInState(CombatState state)
     {
-        if (state == MeleeState.AttackState)
+        if (state == CombatState.AttackState)
         {
             _attackComboPoints = 0;
         }
-        else if (state == MeleeState.BufferState)
+        else if (state == CombatState.BufferState)
         {
             if (_attackComboCounter >= _attackMaxComboCount)
                 _attackComboCounter = 1;

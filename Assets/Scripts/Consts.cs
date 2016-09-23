@@ -11,11 +11,13 @@ public static class Consts {
     public const string TAG_PLAYER = "Player";
 }
 
-public enum MeleeState
+public enum CombatState
 {
     AttackState,
     BufferState,
     IdleState,
+    RollState,
+    ActiveAbilityState,
     UndeterminedState
 }
 

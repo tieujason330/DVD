@@ -21,7 +21,7 @@ public class AttackStateBehavior : StateMachineBehaviour
         
         if (_player._inputAttack)
         {
-            _player.MeleePressedInState(MeleeState.AttackState);
+            _player.MeleePressedInState(CombatState.AttackState);
             _hasAttacked = true;
         }
     }

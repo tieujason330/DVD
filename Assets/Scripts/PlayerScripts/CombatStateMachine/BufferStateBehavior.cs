@@ -21,12 +21,12 @@ public class BufferStateBehavior : StateMachineBehaviour
         
         if (_player._inputAttack)
         {
-            _player.MeleePressedInState(MeleeState.BufferState);
+            _player.MeleePressedInState(CombatState.BufferState);
             _hasAttacked = true;
         }
         else
         {
-            _player.MeleeNotPressedInState(MeleeState.BufferState);
+            _player.MeleeNotPressedInState(CombatState.BufferState);
         }
     }
 
