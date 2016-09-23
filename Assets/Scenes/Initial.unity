@@ -1642,21 +1642,18 @@ MonoBehaviour:
   _destinationPosition: {x: 0, y: 0, z: 0}
   _followDetectionCharacter: {fileID: 0}
   _attackDetectionCharacter: {fileID: 0}
-  _walkSpeed: 0.15
-  _runSpeed: 1
-  _sprintSpeed: 2
-  _flySpeed: 4
-  _turnSmoothing: 3
-  _aimTurnSmoothing: 15
-  _speedDampTime: 0.1
-  jumpHeight: 5
-  jumpCooldown: 1
-  _attackButtonPressed: 0
-  _maxComboCount: 6
-  _attackComboCounter: 0
-  _attackComboPoints: 0
-  _initialComboTimer: 1.6
-  _currentComboTimer: 0
+  _movementWalkSpeed: 0.15
+  _movementRunSpeed: 1
+  _movementSprintSpeed: 2
+  _movementFlySpeed: 4
+  _movementTurnSmoothing: 3
+  _movementAimTurnSmoothing: 15
+  _movementSpeedDampTime: 0.1
+  _movementJumpHeight: 5
+  _movementJumpCooldown: 0.5
+  _inputAttack: 0
+  _attackInitialComboTimer: 0
+  _attackCurrentComboTimer: 0
   _animationClips:
   - {fileID: 7400000, guid: 035625d55a1b6ae4da68882980d3bf30, type: 2}
   - {fileID: 7400000, guid: 2431d8001e528af44accd052e31a5957, type: 2}
@@ -4631,7 +4628,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _comboFill: {fileID: 209829840}
   _currentBarValue: 0
-  _initialBarValue: 0
 --- !u!114 &2007012809
 MonoBehaviour:
   m_ObjectHideFlags: 0
