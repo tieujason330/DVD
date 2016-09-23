@@ -35,6 +35,7 @@ public class PlayerCharacter : BaseWorldCharacter
     private int _meleeAttackBool;
     private int _meleeAttackComboCounterInt;
     private int _damagedTrigger;
+    private int _rollTrigger;
     private int _meleeComboTimedOutBool;
 	private Transform _cameraTransform;
 
@@ -45,6 +46,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
 	private bool _run;
 	private bool _sprint;
+    private bool _roll;
 
     public bool _attackButtonPressed;
 	private bool _isMoving;
@@ -58,7 +60,7 @@ public class PlayerCharacter : BaseWorldCharacter
     private ComboTimer _comboTimer;
     private ComboPoints _comboPoints;
     private bool _isAttacking;
-    private float _comboTimerDuration = 3.0f;
+    private float _comboTimerDuration = 0.5f;
 
     public AnimationClip[] _animationClips;
 
@@ -85,6 +87,7 @@ public class PlayerCharacter : BaseWorldCharacter
 	    _meleeAttackComboCounterInt = Animator.StringToHash("AttackComboCounter");
 	    _damagedTrigger = Animator.StringToHash("Damaged");
 	    _meleeComboTimedOutBool = Animator.StringToHash("ComboTimedOut");
+	    _rollTrigger = Animator.StringToHash("Roll");
 
 		// fly
 		_flyBool = Animator.StringToHash ("Fly");
@@ -124,6 +127,7 @@ public class PlayerCharacter : BaseWorldCharacter
         _run = Input.GetButton ("Run");
 		_sprint = Input.GetButton ("Sprint");
 		_isMoving = Mathf.Abs(_h) > 0.1 || Mathf.Abs(_v) > 0.1;
+	    _roll = Input.GetButtonDown("Roll");
 
 		_animator.SetBool (_aimBool, IsAiming());
 		_animator.SetFloat(_hFloat, _h);
@@ -145,6 +149,8 @@ public class PlayerCharacter : BaseWorldCharacter
             MovementManagement (_h, _v, true, _sprint);
 			JumpManagement ();
 		    //OverrideAnimationTest();
+            if (_roll)
+                _animator.SetTrigger(_rollTrigger);
 
 		}
 	}
@@ -221,6 +227,14 @@ public class PlayerCharacter : BaseWorldCharacter
 
 
         _animator.runtimeAnimatorController = over;
+    }
+
+    public void CancelMeleeCombo()
+    {
+        DisableComboTimer();
+        _attackComboCounter = 0;
+        _attackComboPoints = 0;
+        UpdateAttackFields();
     }
 
     public void MeleeInitializeBufferTime()
