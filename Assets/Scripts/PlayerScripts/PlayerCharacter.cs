@@ -62,6 +62,8 @@ public class PlayerCharacter : BaseWorldCharacter
 
     private Transform _cameraTransform;
 
+    private bool _inventoryOpen;
+
 	void Awake()
 	{
 		_cameraTransform = Camera.main.transform;
@@ -78,10 +80,9 @@ public class PlayerCharacter : BaseWorldCharacter
 	void Update()
 	{
         base.Update();
-		
         Update_InputLogic();
         Update_AnimatorLogic();
-	    Update_ComboTimerLogic();
+        Update_ComboTimerLogic();
 	}
 
     #region Initialization
@@ -131,16 +132,31 @@ public class PlayerCharacter : BaseWorldCharacter
     void Update_InputLogic()
     {
         // fly
-        if (Input.GetButtonDown("Fly"))
-            _movementFly = !_movementFly;
-        _inputAim = Input.GetButton("Aim");
-        _inputHorizontal = Input.GetAxis("MoveHorizontal");
-        _inputVertical = Input.GetAxis("MoveVertical");
-        _inputAttack = Input.GetButtonDown("Attack");
-        _inputRun = Input.GetButton("Run");
-        _inputSprint = Input.GetButton("Sprint");
-        _inputRoll = Input.GetButtonDown("Roll");
-        _inputActiveAbility = Input.GetButtonDown("ActiveAbility");
+        if (!_inventoryOpen)
+        {
+            if (Input.GetButtonDown("Fly"))
+                _movementFly = !_movementFly;
+            _inputAim = Input.GetButton("Aim");
+            _inputHorizontal = Input.GetAxis("MoveHorizontal");
+            _inputVertical = Input.GetAxis("MoveVertical");
+            _inputAttack = Input.GetButtonDown("Attack");
+            _inputRun = Input.GetButton("Run");
+            _inputSprint = Input.GetButton("Sprint");
+            _inputRoll = Input.GetButtonDown("Roll");
+            _inputActiveAbility = Input.GetButtonDown("ActiveAbility");
+        }
+
+        if (Input.GetButtonDown("Inventory"))
+        {
+            _inventoryOpen = GetComponent<Inventory>().Toggle();
+            _cameraTransform.GetComponent<ThirdPersonOrbitCam>().InventoryOpen = _inventoryOpen;
+
+            if (_inventoryOpen)
+            {
+                _inputHorizontal = 0.0f;
+                _inputVertical = 0.0f;
+            }
+        }
     }
 
     #endregion
