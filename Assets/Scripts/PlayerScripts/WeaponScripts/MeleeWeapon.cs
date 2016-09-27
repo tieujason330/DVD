@@ -7,7 +7,10 @@ public class MeleeWeapon : BaseWeapon
 
     private BoxCollider _collider;
     private bool _collisionEntered;
-    //
+    
+    public int _maxAttackComboCount;
+    public AnimationClip[] _attackAnimations;
+    public bool _isEquipped;
 
     void Awake()
     {
@@ -19,16 +22,15 @@ public class MeleeWeapon : BaseWeapon
 
 	// Use this for initialization
 	void Start () {
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_myCharacter.IsAttacking() && !_collisionEntered)
+        if (_myCharacter.IsAttacking && !_collisionEntered)
             _collider.enabled = true;
 
-        if (!_myCharacter.IsAttacking())
+        if (!_myCharacter.IsAttacking)
         {
             _collider.enabled = false;
             _collisionEntered = false;
@@ -47,5 +49,15 @@ public class MeleeWeapon : BaseWeapon
     private float CalculateDamage()
     {
         return UnityEngine.Random.Range(_minimumDamage, _maximumDamage);
+    }
+
+    public override void Equip()
+    {
+        _myCharacter.SetupEquipmentLogic(_maxAttackComboCount, _attackAnimations);
+    }
+
+    public override void Unequip()
+    {
+        _myCharacter.OverrideAttackAnimations(null);
     }
 }

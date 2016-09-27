@@ -4,29 +4,29 @@ using System.Collections;
 public class BufferStateBehavior : StateMachineBehaviour
 {
 
-    private PlayerCharacter _player;
+    private PlayerCombat _playerCombat;
     public bool _hasAttacked;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _player = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCharacter>();
+        _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
         _hasAttacked = false;
 
-        _player.MeleeInitializeBufferTime();
+        _playerCombat.MeleeInitializeBufferTime();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (_hasAttacked) return;
         
-        if (_player._inputAttack)
+        if (_playerCombat._playerMain.InputAttack)
         {
-            _player.MeleePressedInState(CombatState.BufferState);
+            _playerCombat.MeleePressedInState(CombatState.BufferState);
             _hasAttacked = true;
         }
         else
         {
-            _player.MeleeNotPressedInState(CombatState.BufferState);
+            _playerCombat.MeleeNotPressedInState(CombatState.BufferState);
         }
     }
 

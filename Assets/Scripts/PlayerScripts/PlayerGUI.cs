@@ -6,7 +6,7 @@ using System.Linq;
 public class PlayerGUI : MonoBehaviour
 {
     public HealthBar _playerHealthBar;
-    public PlayerCharacter _player;
+    public PlayerMain _player;
 
     void Awake()
     {

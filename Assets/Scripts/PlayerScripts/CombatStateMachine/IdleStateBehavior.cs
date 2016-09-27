@@ -4,12 +4,12 @@ using System.Collections;
 public class IdleStateBehavior : StateMachineBehaviour
 {
 
-    private PlayerCharacter _player;
+    private PlayerCombat _playerCombat;
     public bool _hasAttacked;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _player = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCharacter>();
+        _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
         _hasAttacked = false;
     }
 
@@ -17,14 +17,14 @@ public class IdleStateBehavior : StateMachineBehaviour
     {
         if (_hasAttacked) return;
 
-        if (_player._inputAttack)
+        if (_playerCombat._playerMain.InputAttack)
         {
-            _player.MeleePressedInState(CombatState.BufferState);
+            _playerCombat.MeleePressedInState(CombatState.BufferState);
             _hasAttacked = true;
         }
         else
         {
-            _player.MeleeNotPressedInState(CombatState.IdleState);
+            _playerCombat.MeleeNotPressedInState(CombatState.IdleState);
         }
     }
 }

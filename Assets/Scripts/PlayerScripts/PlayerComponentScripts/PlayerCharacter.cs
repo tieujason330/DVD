@@ -330,7 +330,7 @@ public class PlayerCharacter : BaseWorldCharacter
         _isAttacking = attacking;
     }
 
-    public override bool IsAttacking()
+    public bool IsAttacking()
     {
         return _isAttacking;
         ////value of 1 is end of anim
@@ -504,7 +504,7 @@ public class PlayerCharacter : BaseWorldCharacter
         return Mathf.Abs(_inputHorizontal) > 0.1 || Mathf.Abs(_inputVertical) > 0.1;
     }
 
-    public override bool IsAiming()
+    public bool IsAiming()
     {
         return _inputAim && !_movementFly;
     }
@@ -516,6 +516,13 @@ public class PlayerCharacter : BaseWorldCharacter
         throw new NotImplementedException();
     }
 
+    public override void OverrideAttackAnimations(AnimationClip[] overridedAnimations)
+    {
+        throw new NotImplementedException();
+    }
 
-
+    public override void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
+    {
+        throw new NotImplementedException();
+    }
 }

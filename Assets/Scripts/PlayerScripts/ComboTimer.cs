@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ComboTimer : MonoBehaviour
 {
-    PlayerCharacter _myCharacter;
+    PlayerCombat _myCharacter;
     public GameObject _comboTime;
 
     public float _currentBarValue;
@@ -11,7 +11,7 @@ public class ComboTimer : MonoBehaviour
 
     void Awake()
     {
-        _myCharacter = GetComponentInParent<PlayerCharacter>();
+        _myCharacter = GetComponentInParent<PlayerCombat>();
     }
 
     // Use this for initialization

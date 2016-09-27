@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseWeapon : MonoBehaviour {
+public abstract class BaseWeapon : BaseEquipment {
 
     public BaseWorldCharacter _myCharacter;
 
