@@ -4,12 +4,12 @@ using System.Collections;
 public class ActiveAbilityStateBehavior : StateMachineBehaviour
 {
 
-    private PlayerCharacter _player;
+    private PlayerCombat _playerCombat;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _player = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCharacter>();
-        _player.StopMeleeCombo(CombatState.ActiveAbilityState);
+        _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
+        _playerCombat.StopMeleeCombo(CombatState.ActiveAbilityState);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -18,5 +18,6 @@ public class ActiveAbilityStateBehavior : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        _playerCombat.IsUsingAbility = false;
     }
 }

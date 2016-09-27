@@ -45,9 +45,11 @@ public class PlayerCharacter : BaseWorldCharacter
 	private bool _inputSprint;
     private bool _inputRoll;
     public bool _inputAttack;
-    private bool _inputActiveAbility;
+    private bool _inputSelectActiveAbility;
+    private bool _inputActiveAbility01;
 
 
+    private const int ATTACK_MAXIMUM_COMBO_COUNT = 6;
     private int _attackMaxComboCount = 6;
     private int _attackComboCounter;
     private int _attackComboPoints;
@@ -55,12 +57,13 @@ public class PlayerCharacter : BaseWorldCharacter
     public float _attackCurrentComboTimer;
     private ComboTimer _attackComboTimerComponent;
     private ComboPoints _attackComboPointsComponent;
-    private bool _isAttacking;
     private float _attackComboTimerDuration = 0.5f;
-
-    public AnimationClip[] _animationClips;
+    //public bool IsAttacking { get; set; } 
+    public bool IsUsingAbility { get; set; }
 
     private Transform _cameraTransform;
+
+    private Dictionary<EquipmentComponent, BaseEquipment> _equipment;
 
 	void Awake()
 	{
@@ -140,7 +143,8 @@ public class PlayerCharacter : BaseWorldCharacter
         _inputRun = Input.GetButton("Run");
         _inputSprint = Input.GetButton("Sprint");
         _inputRoll = Input.GetButtonDown("Roll");
-        _inputActiveAbility = Input.GetButtonDown("ActiveAbility");
+        _inputSelectActiveAbility = Input.GetButton("SelectActiveAbility");
+        _inputActiveAbility01 = Input.GetButtonDown("ActiveAbility01");
     }
 
     #endregion
@@ -189,10 +193,14 @@ public class PlayerCharacter : BaseWorldCharacter
     {
         bool performAbility = false;
 
-        if (_inputActiveAbility && _attackComboPoints >= 2)
+        if (_inputSelectActiveAbility)
         {
-            _attackComboPoints -= 2;
-            performAbility = true;
+            if (_inputActiveAbility01 && _attackComboPoints >= 2)
+            {
+                _inputAttack = false;
+                _attackComboPoints -= 2;
+                performAbility = true;
+            }
         }
 
         _animator.SetBool(_animatorActiveAbilityParameter, performAbility);
@@ -224,20 +232,28 @@ public class PlayerCharacter : BaseWorldCharacter
         _animator.SetBool(_animtorComboTimerOnParameter, false);
     }
 
-    private int count = 0;
-    void OverrideAnimationTest()
+    public override void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
     {
-        if (count > 0) return;
-        count++;
+        _attackMaxComboCount = maxComboCount;
+        OverrideAttackAnimations(overridedAnimations);
+    }
+
+    public override void OverrideAttackAnimations(AnimationClip[] overridedAnimations = null)
+    {
+        if (overridedAnimations == null)
+        {
+            //reset character animations
+        }
+
         RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
         AnimatorOverrideController over = new AnimatorOverrideController();
         over.runtimeAnimatorController = runtime;
 
         string animName = "MeleeAttack0";
 
-        for (int i = 0; i < _animationClips.Length; i++)
+        for (int i = 0; i < overridedAnimations.Length && i < ATTACK_MAXIMUM_COMBO_COUNT; i++)
         {
-            over[animName + (i + 1)] = _animationClips[i];
+            over[animName + (i + 1)] = overridedAnimations[i];
         }
 
 
@@ -309,25 +325,6 @@ public class PlayerCharacter : BaseWorldCharacter
         _animator.SetBool(_animatorMeleeAttackParameter, _inputAttack);
     }
 
-    public void SetIsAttacking(bool attacking)
-    {
-        _isAttacking = attacking;
-    }
-
-    public override bool IsAttacking()
-    {
-        return _isAttacking;
-        ////value of 1 is end of anim
-        ////value of 0.5 is end of anim
-        //AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-        //if (animStateInfo.IsName("MeleeAttack" + _attackComboCounter))
-        //{
-        //    return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
-        //}
-        ////Added AttackLoopBuffer in Animator to allow return false during loop
-        //return false;
-    }
-
     public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {
         if (attackedCharacter != null)
@@ -347,6 +344,10 @@ public class PlayerCharacter : BaseWorldCharacter
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }
+
+    #endregion
+
+    #region Ability logic
 
     #endregion
 
@@ -380,7 +381,7 @@ public class PlayerCharacter : BaseWorldCharacter
 
     void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
     {
-        if (IsAttacking()) return;
+        if (IsAttacking) return;
 
 		Rotating(-vertical, -horizontal);
 
@@ -488,7 +489,7 @@ public class PlayerCharacter : BaseWorldCharacter
         return Mathf.Abs(_inputHorizontal) > 0.1 || Mathf.Abs(_inputVertical) > 0.1;
     }
 
-    public override bool IsAiming()
+    public new bool IsAiming()
     {
         return _inputAim && !_movementFly;
     }

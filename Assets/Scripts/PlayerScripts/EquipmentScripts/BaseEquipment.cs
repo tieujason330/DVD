@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseEquipment : MonoBehaviour {
+public abstract class BaseEquipment : MonoBehaviour
+{
+
+    protected ActiveAbility _activeAbility;
+    public EquipmentComponent _equipmentComponent;
+    public EquipmentType _EquipmentType;
 
 	// Use this for initialization
 	void Start () {
@@ -12,4 +17,8 @@ public class BaseEquipment : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public abstract void Equip();
+
+    public abstract void Unequip();
 }

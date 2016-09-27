@@ -146,18 +146,18 @@ public class BaseAIUnit : BaseWorldCharacter
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
     }
 
-    public override bool IsAttacking()
-    {
-        //value of 1 is end of anim
-        //value of 0.5 is end of anim
-        AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
-        if (animStateInfo.IsName("Attack"))
-        {
-            return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
-        }
-        //Added AttackLoopBuffer in Animator to allow return false during loop
-        return false;
-    }
+    //public virtual bool IsAttacking()
+    //{
+    //    //value of 1 is end of anim
+    //    //value of 0.5 is end of anim
+    //    AnimatorStateInfo animStateInfo = _animator.GetCurrentAnimatorStateInfo(Consts.ANIMATION_ATTACK_LAYER);
+    //    if (animStateInfo.IsName("Attack"))
+    //    {
+    //        return (animStateInfo.normalizedTime < 1.0f || animStateInfo.loop) && _attackFrame;
+    //    }
+    //    //Added AttackLoopBuffer in Animator to allow return false during loop
+    //    return false;
+    //}
 
     public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {
@@ -199,7 +199,17 @@ public class BaseAIUnit : BaseWorldCharacter
         }
     }
 
-    public override bool IsAiming()
+    public new bool IsAiming()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void OverrideAttackAnimations(AnimationClip[] overridedAnimations)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
     {
         throw new NotImplementedException();
     }

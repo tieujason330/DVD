@@ -15,6 +15,8 @@ public abstract class BaseWorldCharacter : MonoBehaviour
     public BaseWorldCharacter _followDetectionCharacter = null;
     public BaseWorldCharacter _attackDetectionCharacter = null;
 
+    public bool IsAttacking { get; set; }
+
     void Awake()
     {
         _attackFrame = false;
@@ -31,8 +33,8 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 	    CheckPlayerStatus();
 	}
 
-    public abstract bool IsAiming();
-    public abstract bool IsAttacking();
+    public bool IsAiming { get; set; }
+    //public abstract bool IsAttacking();
     public abstract void GiveDamage(float damage, BaseWorldCharacter attackedCharacter);
     public abstract void TakeDamage(float damage);
 
@@ -52,4 +54,8 @@ public abstract class BaseWorldCharacter : MonoBehaviour
     }
 
     public abstract void SetDestinationPosition(Vector3 destination);
+
+    public abstract void OverrideAttackAnimations(AnimationClip[] overridedAnimations);
+
+    public abstract void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations);
 }

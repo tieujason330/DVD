@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class RangedWeapon : BaseWeapon
 {
@@ -28,7 +29,7 @@ public class RangedWeapon : BaseWeapon
 	void Update () {
         //Vector3 forward = transform.TransformDirection(Vector3.forward * 2);
         //Debug.DrawRay(transform.position, forward, Color.green);
-        if (_myCharacter.IsAttacking() && _myCharacter.IsAiming())
+        if (_myCharacter.IsAttacking && _myCharacter.IsAiming)
 	    {
 	        Projectile projectile = TakeProjectile();
 	        if (projectile != null)
@@ -53,5 +54,15 @@ public class RangedWeapon : BaseWeapon
         if (_projectiles.Count > 0)
             return _projectiles.Dequeue();
         return null;
+    }
+
+    public override void Equip()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Unequip()
+    {
+        throw new NotImplementedException();
     }
 }

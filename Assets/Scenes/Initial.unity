@@ -1613,6 +1613,9 @@ GameObject:
   - 95: {fileID: 555158058}
   - 136: {fileID: 555158057}
   - 54: {fileID: 555158056}
+  - 114: {fileID: 555158061}
+  - 114: {fileID: 555158060}
+  - 114: {fileID: 555158059}
   - 114: {fileID: 555158055}
   m_Layer: 0
   m_Name: Player
@@ -1624,43 +1627,14 @@ GameObject:
 --- !u!114 &555158055
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11485172, guid: fa88d320ca44f0a489d7cc9279913413,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 555158054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32f9481eaeb92ac4280d5fc884fc452a, type: 3}
+  m_Script: {fileID: 11500000, guid: 68697acad5105c345a670cc5bbde11d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentHealth: 0
-  _initialHealth: 100
-  _faction: 0
-  _status: 0
-  _action: 0
-  _attackFrame: 0
-  _destinationPosition: {x: 0, y: 0, z: 0}
-  _followDetectionCharacter: {fileID: 0}
-  _attackDetectionCharacter: {fileID: 0}
-  _movementWalkSpeed: 0.15
-  _movementRunSpeed: 1
-  _movementSprintSpeed: 2
-  _movementFlySpeed: 4
-  _movementTurnSmoothing: 3
-  _movementAimTurnSmoothing: 15
-  _movementSpeedDampTime: 0.1
-  _movementJumpHeight: 5
-  _movementJumpCooldown: 0.5
-  _inputAttack: 0
-  _attackInitialComboTimer: 0
-  _attackCurrentComboTimer: 0
-  _animationClips:
-  - {fileID: 7400000, guid: 035625d55a1b6ae4da68882980d3bf30, type: 2}
-  - {fileID: 7400000, guid: 2431d8001e528af44accd052e31a5957, type: 2}
-  - {fileID: 7400000, guid: 38e8359284dce3841ac07a23ae94e660, type: 2}
-  - {fileID: 7400000, guid: 47fa82a20ac6395438cfe0f103ea13aa, type: 2}
-  - {fileID: 7400000, guid: 827a05e27b7ec034a8430c077c7947f4, type: 2}
-  - {fileID: 7400000, guid: ce67595715d4efc47bda8e8bc740e203, type: 2}
 --- !u!54 &555158056
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1709,6 +1683,62 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &555158059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 555158054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33cd17962e1086c409cdb84be9d1b174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentHealth: 0
+  _initialHealth: 100
+  _faction: 0
+  _status: 0
+  _action: 0
+  _attackFrame: 0
+  _destinationPosition: {x: 0, y: 0, z: 0}
+  _followDetectionCharacter: {fileID: 0}
+  _attackDetectionCharacter: {fileID: 0}
+--- !u!114 &555158060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 555158054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d5e72fbfa064e143bfa8070e2f0c746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMain: {fileID: 0}
+  _attackInitialComboTimer: 0
+  _attackCurrentComboTimer: 0
+--- !u!114 &555158061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 555158054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7912dec8ab2a0c244b0c305291eddabd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMain: {fileID: 0}
+  _playerCombat: {fileID: 0}
+  _movementWalkSpeed: 0.15
+  _movementRunSpeed: 1
+  _movementSprintSpeed: 2
+  _movementFlySpeed: 4
+  _movementTurnSmoothing: 3
+  _movementAimTurnSmoothing: 15
+  _movementSpeedDampTime: 0.1
+  _movementJumpHeight: 5
+  _movementJumpCooldown: 1
 --- !u!1 &654395996
 GameObject:
   m_ObjectHideFlags: 0
@@ -3520,9 +3550,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d00d12fa56e89943a6b1ece78f0f5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _equipmentComponent: 0
+  _EquipmentType: 0
   _myCharacter: {fileID: 0}
   _minimumDamage: 10
   _maximumDamage: 12
+  _maxAttackComboCount: 0
+  _attackAnimations: []
+  _isEquipped: 0
 --- !u!65 &1492085102
 BoxCollider:
   m_ObjectHideFlags: 0

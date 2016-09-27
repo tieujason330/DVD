@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ActiveAbility : MonoBehaviour
-{
+public class PlayerInventory : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -14,7 +13,8 @@ public class ActiveAbility : MonoBehaviour
 	
 	}
 
-    public virtual void Execute()
+    public void PlayerUpdate()
     {
+        
     }
 }

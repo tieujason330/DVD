@@ -55,3 +55,23 @@ public enum CharacterAction
     Follow,
     MoveTo
 }
+
+public enum EquipmentComponent
+{
+    Head,
+    Torso,
+    LeftArm,
+    RightArm,
+    Legs,
+    None
+}
+
+//tbd
+public enum EquipmentType
+{
+    Helmet,
+    Armor,
+    MeleeWeapon,
+    RangeWeapon,
+    Boots
+}

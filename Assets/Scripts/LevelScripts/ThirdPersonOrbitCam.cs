@@ -24,7 +24,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 
 	public float sprintFOV = 100f;
 	
-	private PlayerCharacter playerControl;
+	private PlayerMovement playerControl;
 	private float angleH = 0;
 	private float angleV = 0;
 	private Transform cam;
@@ -43,7 +43,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	void Awake()
 	{
 		cam = transform;
-		playerControl = player.GetComponent<PlayerCharacter> ();
+		playerControl = player.GetComponent<PlayerMovement> ();
 
 		relCameraPos = transform.position - player.position;
 		relCameraPosMag = relCameraPos.magnitude - 0.5f;
