@@ -40,6 +40,13 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	private float defaultFOV;
 	private float targetFOV;
 
+    private bool _inventoryOpen;
+    public bool InventoryOpen
+    {
+        get { return _inventoryOpen; }
+        set { _inventoryOpen = value; }
+    }
+
 	void Awake()
 	{
 		cam = transform;
@@ -52,73 +59,76 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		smoothCamOffset = camOffset;
 
 		defaultFOV = cam.GetComponent<Camera>().fieldOfView;
+        _inventoryOpen = false;
 	}
 
 	void LateUpdate()
 	{
-		angleH += Mathf.Clamp(Input.GetAxis("LookHorizontal"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
-		angleV += Mathf.Clamp(Input.GetAxis("LookVertical"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
+        if (!_inventoryOpen)
+        {
+            angleH += Mathf.Clamp(Input.GetAxis("LookHorizontal"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
+            angleV += Mathf.Clamp(Input.GetAxis("LookVertical"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
 
-		// fly
-		if(playerControl.IsFlying())
-		{
-			angleV = Mathf.Clamp(angleV, minVerticalAngle, flyMaxVerticalAngle);
-		}
-		else
-		{
-			angleV = Mathf.Clamp(angleV, minVerticalAngle, maxVerticalAngle);
-		}
+            // fly
+            if (playerControl.IsFlying())
+            {
+                angleV = Mathf.Clamp(angleV, minVerticalAngle, flyMaxVerticalAngle);
+            }
+            else
+            {
+                angleV = Mathf.Clamp(angleV, minVerticalAngle, maxVerticalAngle);
+            }
 
 
-		Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
-		Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
-		cam.rotation = aimRotation;
+            Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
+            Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
+            cam.rotation = aimRotation;
 
-		if(playerControl.IsAiming())
-		{
-			targetPivotOffset = aimPivotOffset;
-			targetCamOffset = aimCamOffset;
-		}
-		else
-		{
-			targetPivotOffset = pivotOffset;
-			targetCamOffset = camOffset;
-		}
+            if (playerControl.IsAiming())
+            {
+                targetPivotOffset = aimPivotOffset;
+                targetCamOffset = aimCamOffset;
+            }
+            else
+            {
+                targetPivotOffset = pivotOffset;
+                targetCamOffset = camOffset;
+            }
 
-		if(playerControl.IsSprinting())
-		{
-			targetFOV = sprintFOV;
-		}
-		else
-		{
-			targetFOV = defaultFOV;
-		}
-		cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp (cam.GetComponent<Camera>().fieldOfView, targetFOV,  Time.deltaTime);
+            if (playerControl.IsSprinting())
+            {
+                targetFOV = sprintFOV;
+            }
+            else
+            {
+                targetFOV = defaultFOV;
+            }
+            cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(cam.GetComponent<Camera>().fieldOfView, targetFOV, Time.deltaTime);
 
-		// Test for collision
-		Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
-		Vector3 tempOffset = targetCamOffset;
-		for(float zOffset = targetCamOffset.z; zOffset <= 0; zOffset += 0.5f)
-		{
-			tempOffset.z = zOffset;
-			if (DoubleViewingPosCheck (baseTempPosition + aimRotation * tempOffset) || zOffset == 0) 
-			{
-				targetCamOffset.z = tempOffset.z;
-				break;
-			} 
-		}
+            // Test for collision
+            Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
+            Vector3 tempOffset = targetCamOffset;
+            for (float zOffset = targetCamOffset.z; zOffset <= 0; zOffset += 0.5f)
+            {
+                tempOffset.z = zOffset;
+                if (DoubleViewingPosCheck(baseTempPosition + aimRotation * tempOffset) || zOffset == 0)
+                {
+                    targetCamOffset.z = tempOffset.z;
+                    break;
+                }
+            }
 
-		// fly
-		if(playerControl.IsFlying())
-		{
-			targetCamOffset.y = 0;
-		}
+            // fly
+            if (playerControl.IsFlying())
+            {
+                targetCamOffset.y = 0;
+            }
 
-		smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
-		smoothCamOffset = Vector3.Lerp(smoothCamOffset, targetCamOffset, smooth * Time.deltaTime);
+            smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
+            smoothCamOffset = Vector3.Lerp(smoothCamOffset, targetCamOffset, smooth * Time.deltaTime);
 
-		cam.position =  player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
-
+            cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+        }
 	}
 
 	// concave objects doesn't detect hit from outside, so cast in both directions

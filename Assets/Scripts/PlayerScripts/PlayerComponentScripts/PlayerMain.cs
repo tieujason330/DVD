@@ -29,6 +29,7 @@ public class PlayerMain : BaseWorldCharacter
     private bool _inputRoll;
     private bool _inputFly;
     //private bool _inputSelectActiveAbility;
+
     private bool _inputHeadActiveAbility;
     private bool _inputTorsoActiveAbility;
     private bool _inputRightArmActiveAbility;
@@ -36,6 +37,9 @@ public class PlayerMain : BaseWorldCharacter
     private bool _inputLegsActiveAbility;
     private bool _inputRightArm;
     public bool _inputLeftArm;
+
+    private bool _inputActiveAbility01;
+    private bool _inventoryOpen;
 
     //Getters
     public float InputHorizontal { get { return _inputHorizontal; } }
@@ -73,28 +77,39 @@ public class PlayerMain : BaseWorldCharacter
 	
 	// Update is called once per frame
 	void Update () {
+        base.Update();
         Update_InputLogic();
-
 	    Update_PlayerComponents();
 	}
 
     void Update_InputLogic()
     {
-        _inputFly = Input.GetButtonDown("Fly");
-        _inputAim = Input.GetButton("Aim");
-        _inputHorizontal = Input.GetAxis("MoveHorizontal");
-        _inputVertical = Input.GetAxis("MoveVertical");
-        _inputRun = Input.GetButton("Run");
-        _inputSprint = Input.GetButton("Sprint");
-        _inputRoll = Input.GetButtonDown("Roll");
-        //_inputSelectActiveAbility = Input.GetButton("SelectActiveAbility");
-        _inputHeadActiveAbility = Input.GetButtonDown("HeadActiveAbility");
-        _inputTorsoActiveAbility = Input.GetButtonDown("TorsoActiveAbility");
-        _inputRightArmActiveAbility = Input.GetButtonDown("RightArmActiveAbility");
-        _inputLeftArmActiveAbility = Input.GetButtonDown("LeftArmActiveAbility");
-        _inputLegsActiveAbility = Input.GetButtonDown("LegsActiveAbility");
+        if (!_inventoryOpen)
+        {
+            _inputFly = Input.GetButtonDown("Fly");
+            _inputAim = Input.GetButton("Aim");
+            _inputHorizontal = Input.GetAxis("MoveHorizontal");
+            _inputVertical = Input.GetAxis("MoveVertical");
+            _inputRun = Input.GetButton("Run");
+            _inputSprint = Input.GetButton("Sprint");
+            _inputRoll = Input.GetButtonDown("Roll");
+            //_inputSelectActiveAbility = Input.GetButton("SelectActiveAbility");
+            _inputHeadActiveAbility = Input.GetButtonDown("HeadActiveAbility");
+            _inputTorsoActiveAbility = Input.GetButtonDown("TorsoActiveAbility");
+            _inputRightArmActiveAbility = Input.GetButtonDown("RightArmActiveAbility");
+            _inputLeftArmActiveAbility = Input.GetButtonDown("LeftArmActiveAbility");
+            _inputLegsActiveAbility = Input.GetButtonDown("LegsActiveAbility");
 
-        SetTriggerInputs();
+            SetTriggerInputs();
+        }
+
+        if (Input.GetButtonDown("Inventory"))
+        {
+            _inventoryOpen = GetComponent<PlayerInventory>().Toggle();
+            Camera.main.GetComponent<ThirdPersonOrbitCam>().InventoryOpen = _inventoryOpen;
+            _inputVertical = 0.0f;
+            _inputHorizontal = 0.0f;
+        }
     }
 
     private bool _usingRightTrigger = false;
@@ -127,14 +142,17 @@ public class PlayerMain : BaseWorldCharacter
         else
         {
             _usingLeftTrigger = false;
-        }
+        }        
     }
 
     void Update_PlayerComponents()
     {
         _playerMovement.PlayerUpdate();
         _playerCombat.PlayerUpdate();
-        _playerInventory.PlayerUpdate();
+
+        if (_inventoryOpen)
+            _playerInventory.PlayerUpdate();
+        
     }
 
     public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
