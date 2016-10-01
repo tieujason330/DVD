@@ -689,6 +689,37 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 209829840}
+--- !u!1 &260739867 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: e7023e787beaf5049b8accb1e3853238, type: 2}
+  m_PrefabInternal: {fileID: 634531312}
+--- !u!114 &260739871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 260739867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d3ebb3008890b74487d0aef508957e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _equipmentComponent: 0
+  _EquipmentType: 0
+  _itemIcon: {fileID: 21300000, guid: 0ace6a875234fa94385e9a3f8b5d3782, type: 3}
+--- !u!136 &260739872
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 260739867}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.41802403
+  m_Height: 0.53921676
+  m_Direction: 1
+  m_Center: {x: -0.00000005960464, y: -2.979269e-17, z: -0.001048237}
 --- !u!1 &261632298
 GameObject:
   m_ObjectHideFlags: 0
@@ -1799,6 +1830,36 @@ MonoBehaviour:
   _movementSpeedDampTime: 0.1
   _movementJumpHeight: 5
   _movementJumpCooldown: 1
+--- !u!1 &620804645 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: c03bcbe23ebe60b489d355e61b153312, type: 2}
+  m_PrefabInternal: {fileID: 1249164861}
+--- !u!135 &620804646
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 620804645}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.20556217
+  m_Center: {x: -0.00000012665987, y: 0.010776102, z: 0.014458934}
+--- !u!114 &620804647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 620804645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d3ebb3008890b74487d0aef508957e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _equipmentComponent: 0
+  _EquipmentType: 0
+  _itemIcon: {fileID: 21300000, guid: aca2da6ea1794f642ba225e055200566, type: 3}
 --- !u!1001 &634531312
 Prefab:
   m_ObjectHideFlags: 0
@@ -1985,7 +2046,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 666619915}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.19, y: 1.26, z: 0}
+  m_LocalPosition: {x: -6.83, y: 1.26, z: 0}
   m_LocalScale: {x: 5.2181087, y: 5.2181053, z: 5.2181053}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -3457,6 +3518,37 @@ Transform:
   - {fileID: 1304000414}
   m_Father: {fileID: 94622300}
   m_RootOrder: 0
+--- !u!1 &1408682257 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: 022529d68f0ce41499adc4f4b308698a, type: 2}
+  m_PrefabInternal: {fileID: 322260733}
+--- !u!136 &1408682258
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1408682257}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.6941581
+  m_Height: 1.4879482
+  m_Direction: 1
+  m_Center: {x: 0.00000020855808, y: -0.03123182, z: -0.0018439591}
+--- !u!114 &1408682259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1408682257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d3ebb3008890b74487d0aef508957e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _equipmentComponent: 0
+  _EquipmentType: 0
+  _itemIcon: {fileID: 21300000, guid: 7573e2b5316bf8e4aa51059e31f6b32e, type: 3}
 --- !u!1 &1435346801
 GameObject:
   m_ObjectHideFlags: 0
@@ -3712,6 +3804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _equipmentComponent: 0
   _EquipmentType: 0
+  _itemIcon: {fileID: 0}
   _myCharacter: {fileID: 0}
   _minimumDamage: 10
   _maximumDamage: 12
