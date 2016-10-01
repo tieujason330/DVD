@@ -204,12 +204,7 @@ public class BaseAIUnit : BaseWorldCharacter
         throw new NotImplementedException();
     }
 
-    public override void OverrideAttackAnimations(AnimationClip[] overridedAnimations)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
+    public override void SetupEquipmentLogic(BaseEquipment equipment, bool equip)
     {
         throw new NotImplementedException();
     }

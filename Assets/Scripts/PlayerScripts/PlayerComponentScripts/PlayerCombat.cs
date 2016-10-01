@@ -9,24 +9,31 @@ public class PlayerCombat : MonoBehaviour
     private Animator _animator;
     private int _animatorAimParameter;
     private int _animatorMeleeEquippedParameter;
-    private int _animatorMeleeAttackParameter;
-    private int _animtorAttackComboCounterParameter;
+    private int _animatorRightArmParameter;
+    private int _animatorLeftArmParameter;
+    private int _animatorRightAttackComboCounterParameter;
+    private int _animatorLeftAttackComboCounterParameter;
     private int _animtorDamagedParameter;
     private int _animtorRollParameter;
     private int _animtorComboTimerOnParameter;
-    private int _animatorActiveAbilityParameter;
 
-    private const int ATTACK_MAXIMUM_COMBO_COUNT = 6;
-    private int _attackMaxComboCount = 6;
-    private int _attackComboCounter;
+    private int _animatorUsingActiveAbilityParameter;
+    private int _animatorHeadActiveAbilityParameter;
+    private int _animatorTorsoActiveAbilityParameter;
+    private int _animatorRightArmActiveAbilityParameter;
+    private int _animatorLeftArmActiveAbilityParameter;
+    private int _animatorLegsActiveAbilityParameter;
+
+    //public const int ATTACK_MAXIMUM_COMBO_COUNT = 6;
+    //private int _attackMaxComboCount = 6;
+    private int _rightComboCounter;
+    private int _leftComboCounter;
     private int _attackComboPoints;
     public float _attackInitialComboTimer;
     public float _attackCurrentComboTimer;
     private ComboTimer _attackComboTimerComponent;
     private ComboPoints _attackComboPointsComponent;
     private float _attackComboTimerDuration = 0.5f;
-    public bool IsAttacking { get; set; }
-    public bool IsUsingAbility { get; set; }
 
     void Awake()
     {
@@ -66,12 +73,20 @@ public class PlayerCombat : MonoBehaviour
 
         _animatorAimParameter = Animator.StringToHash("Aim");
         _animatorMeleeEquippedParameter = Animator.StringToHash("MeleeEquipped");
-        _animatorMeleeAttackParameter = Animator.StringToHash("MeleeAttack");
-        _animtorAttackComboCounterParameter = Animator.StringToHash("AttackComboCounter");
+        _animatorRightArmParameter = Animator.StringToHash("RightArm");
+        _animatorLeftArmParameter = Animator.StringToHash("LeftArm");
+        _animatorRightAttackComboCounterParameter = Animator.StringToHash("RightComboCounter");
+        _animatorLeftAttackComboCounterParameter = Animator.StringToHash("LeftComboCounter");
         _animtorDamagedParameter = Animator.StringToHash("Damaged");
         _animtorComboTimerOnParameter = Animator.StringToHash("ComboTimerOn");
         _animtorRollParameter = Animator.StringToHash("Roll");
-        _animatorActiveAbilityParameter = Animator.StringToHash("ActiveAbility");
+
+        _animatorUsingActiveAbilityParameter = Animator.StringToHash("UsingActiveAbility");
+        _animatorHeadActiveAbilityParameter = Animator.StringToHash("HeadActiveAbility");
+        _animatorTorsoActiveAbilityParameter = Animator.StringToHash("TorsoActiveAbility");
+        _animatorRightArmActiveAbilityParameter = Animator.StringToHash("RightArmActiveAbility");
+        _animatorLeftArmActiveAbilityParameter = Animator.StringToHash("LeftArmActiveAbility");
+        _animatorLegsActiveAbilityParameter = Animator.StringToHash("LegsActiveAbility");
     }
 
     void InitializeComboLogic()
@@ -98,14 +113,24 @@ public class PlayerCombat : MonoBehaviour
 
     void ActiveAbilityManagement()
     {
-        bool performAbility = false;
+        //bool performAbility = false;
 
-        if (_playerMain.InputActiveAbility01 && _attackComboPoints >= 2)
-        {
-            _attackComboPoints -= 2;
-            performAbility = true;
-        }
-        _animator.SetBool(_animatorActiveAbilityParameter, performAbility);
+        //if (_playerMain.InputHeadActiveAbility && _attackComboPoints >= 2)
+        //{
+        //    _attackComboPoints -= 2;
+        //    performAbility = true;
+        //}
+        //_animator.SetBool(_animatorActiveAbility01Parameter, performAbility);
+
+        _animator.SetBool(_animatorHeadActiveAbilityParameter, _playerMain.InputHeadActiveAbility);
+        _animator.SetBool(_animatorTorsoActiveAbilityParameter, _playerMain.InputTorsoActiveAbility);
+        _animator.SetBool(_animatorRightArmActiveAbilityParameter, _playerMain.InputRightArmActiveAbility);
+        _animator.SetBool(_animatorLeftArmActiveAbilityParameter, _playerMain.InputLeftArmActiveAbility);
+        _animator.SetBool(_animatorLegsActiveAbilityParameter, _playerMain.InputLegsActiveAbility);
+        var usingAbility = _playerMain.InputHeadActiveAbility || _playerMain.InputTorsoActiveAbility ||
+                           _playerMain.InputRightArmActiveAbility || _playerMain.InputLeftArmActiveAbility ||
+                           _playerMain.InputLegsActiveAbility;
+        _animator.SetBool(_animatorUsingActiveAbilityParameter, usingAbility);
     }
 
     void ComboTimerTick()
@@ -134,45 +159,46 @@ public class PlayerCombat : MonoBehaviour
         _animator.SetBool(_animtorComboTimerOnParameter, false);
     }
 
-    public void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
-    {
-        _attackMaxComboCount = maxComboCount;
-        OverrideAttackAnimations(overridedAnimations);
-    }
+    //public void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
+    //{
+    //    _attackMaxComboCount = maxComboCount;
+    //    OverrideAttackAnimations(overridedAnimations);
+    //}
 
-    public void OverrideAttackAnimations(AnimationClip[] overridedAnimations = null)
-    {
-        if (overridedAnimations == null)
-        {
-            //reset character animations
-            return;
-        }
+    //public void OverrideAttackAnimations(AnimationClip[] overridedAnimations = null)
+    //{
+    //    if (overridedAnimations == null)
+    //    {
+    //        //reset character animations
+    //        return;
+    //    }
 
-        RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
-        AnimatorOverrideController over = new AnimatorOverrideController();
-        over.runtimeAnimatorController = runtime;
+    //    RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
+    //    AnimatorOverrideController over = new AnimatorOverrideController();
+    //    over.runtimeAnimatorController = runtime;
 
-        string animName = "MeleeAttack0";
+    //    string animName = "MeleeAttack0";
 
-        for (int i = 0; i < overridedAnimations.Length && i < ATTACK_MAXIMUM_COMBO_COUNT; i++)
-        {
-            over[animName + (i + 1)] = overridedAnimations[i];
-        }
+    //    for (int i = 0; i < overridedAnimations.Length && i < ATTACK_MAXIMUM_COMBO_COUNT; i++)
+    //    {
+    //        over[animName + (i + 1)] = overridedAnimations[i];
+    //    }
 
 
-        _animator.runtimeAnimatorController = over;
-    }
+    //    _animator.runtimeAnimatorController = over;
+    //}
 
     public void StopMeleeCombo(CombatState state)
     {
         if (state == CombatState.RollState)
         {
-            _attackComboCounter = 0;
+            _leftComboCounter = 0;
+            _rightComboCounter = 0;
             _attackComboPoints = 0;
         }
         else if (state == CombatState.ActiveAbilityState)
         {
-            IsUsingAbility = true;
+            _playerMain.IsUsingAbility = true;
         }
 
         DisableComboTimer();
@@ -192,14 +218,15 @@ public class PlayerCombat : MonoBehaviour
         //}
         if (state == CombatState.IdleState)
         {
-            _attackComboCounter = 0;
+            _leftComboCounter = 0;
+            _rightComboCounter = 0;
             _attackComboPoints = 0;
         }
 
         UpdateAttackFields();
     }
 
-    public void MeleePressedInState(CombatState state)
+    public void MeleePressedInState(CombatState state, string arm = "")
     {
         if (state == CombatState.AttackState)
         {
@@ -207,13 +234,27 @@ public class PlayerCombat : MonoBehaviour
         }
         else if (state == CombatState.BufferState)
         {
-            if (_attackComboCounter >= _attackMaxComboCount)
-                _attackComboCounter = 1;
-            else
-                _attackComboCounter++;
+            if (arm.Equals("RIGHT"))
+            {
+                if (_rightComboCounter >= _playerMain._attackMaxComboCountRightArm)
+                    _rightComboCounter = 1;
+                else
+                    _rightComboCounter++;
 
-            if (_attackComboPoints < _attackMaxComboCount)
-                _attackComboPoints++;
+                if (_attackComboPoints < _playerMain._attackMaxComboCountRightArm)
+                    _attackComboPoints++;
+            }
+
+            if (arm.Equals("LEFT"))
+            {
+                if (_leftComboCounter >= _playerMain._attackMaxComboCountLeftArm)
+                    _leftComboCounter = 1;
+                else
+                    _leftComboCounter++;
+
+                if (_attackComboPoints < _playerMain._attackMaxComboCountLeftArm)
+                    _attackComboPoints++;
+            }
 
             DisableComboTimer();
         }
@@ -223,10 +264,12 @@ public class PlayerCombat : MonoBehaviour
 
     public void UpdateAttackFields()
     {
-        _attackComboPointsComponent.SetComboPoints(_attackComboPoints, _attackMaxComboCount);
+        _attackComboPointsComponent.SetComboPoints(_attackComboPoints, _playerMain._attackMaxComboCountRightArm);
 
-        _animator.SetInteger(_animtorAttackComboCounterParameter, _attackComboCounter);
-        _animator.SetBool(_animatorMeleeAttackParameter, !IsUsingAbility && _playerMain.InputAttack);
+        _animator.SetInteger(_animatorRightAttackComboCounterParameter, _rightComboCounter);
+        _animator.SetInteger(_animatorLeftAttackComboCounterParameter, _leftComboCounter);
+        _animator.SetBool(_animatorRightArmParameter, !_playerMain.IsUsingAbility && _playerMain.InputRightArm);
+        _animator.SetBool(_animatorLeftArmParameter, !_playerMain.IsUsingAbility && _playerMain.InputLeftArm);
     }
 
     public void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)

@@ -4,7 +4,7 @@ using System.Collections;
 public abstract class BaseEquipment : MonoBehaviour
 {
 
-    protected ActiveAbility _activeAbility;
+    public ActiveAbility _activeAbility;
     public EquipmentComponent _equipmentComponent;
     public EquipmentType _EquipmentType;
 

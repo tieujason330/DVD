@@ -232,33 +232,33 @@ public class PlayerCharacter : BaseWorldCharacter
         _animator.SetBool(_animtorComboTimerOnParameter, false);
     }
 
-    public override void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
-    {
-        _attackMaxComboCount = maxComboCount;
-        OverrideAttackAnimations(overridedAnimations);
-    }
+    //public override void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
+    //{
+    //    _attackMaxComboCount = maxComboCount;
+    //    OverrideAttackAnimations(overridedAnimations);
+    //}
 
-    public override void OverrideAttackAnimations(AnimationClip[] overridedAnimations = null)
-    {
-        if (overridedAnimations == null)
-        {
-            //reset character animations
-        }
+    //public override void OverrideAttackAnimations(AnimationClip[] overridedAnimations = null)
+    //{
+    //    if (overridedAnimations == null)
+    //    {
+    //        //reset character animations
+    //    }
 
-        RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
-        AnimatorOverrideController over = new AnimatorOverrideController();
-        over.runtimeAnimatorController = runtime;
+    //    RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
+    //    AnimatorOverrideController over = new AnimatorOverrideController();
+    //    over.runtimeAnimatorController = runtime;
 
-        string animName = "MeleeAttack0";
+    //    string animName = "MeleeAttack0";
 
-        for (int i = 0; i < overridedAnimations.Length && i < ATTACK_MAXIMUM_COMBO_COUNT; i++)
-        {
-            over[animName + (i + 1)] = overridedAnimations[i];
-        }
+    //    for (int i = 0; i < overridedAnimations.Length && i < ATTACK_MAXIMUM_COMBO_COUNT; i++)
+    //    {
+    //        over[animName + (i + 1)] = overridedAnimations[i];
+    //    }
 
 
-        _animator.runtimeAnimatorController = over;
-    }
+    //    _animator.runtimeAnimatorController = over;
+    //}
 
     public void StopMeleeCombo(CombatState state)
     {
@@ -501,6 +501,8 @@ public class PlayerCharacter : BaseWorldCharacter
         throw new NotImplementedException();
     }
 
-
-
+    public override void SetupEquipmentLogic(BaseEquipment equipment, bool equip)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -4,7 +4,6 @@ using System.Collections;
 
 public class MeleeWeapon : BaseWeapon
 {
-
     private BoxCollider _collider;
     private bool _collisionEntered;
     
@@ -46,6 +45,16 @@ public class MeleeWeapon : BaseWeapon
             _myCharacter.GiveDamage(CalculateDamage(), attackedCharacter);
     }
 
+    void OnEnable()
+    {
+        Equip();
+    }
+
+    void OnDisable()
+    {
+        Unequip();
+    }
+
     private float CalculateDamage()
     {
         return UnityEngine.Random.Range(_minimumDamage, _maximumDamage);
@@ -53,11 +62,11 @@ public class MeleeWeapon : BaseWeapon
 
     public override void Equip()
     {
-        _myCharacter.SetupEquipmentLogic(_maxAttackComboCount, _attackAnimations);
+        _myCharacter.SetupEquipmentLogic(this, true);
     }
 
     public override void Unequip()
     {
-        _myCharacter.OverrideAttackAnimations(null);
+        _myCharacter.SetupEquipmentLogic(this, false);
     }
 }

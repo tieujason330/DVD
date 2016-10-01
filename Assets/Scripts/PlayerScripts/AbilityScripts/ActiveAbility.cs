@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ActiveAbility : MonoBehaviour
+public class ActiveAbility : BaseAbility
 {
+    public int _activeCost;
 
 	// Use this for initialization
 	void Start () {

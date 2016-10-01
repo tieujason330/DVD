@@ -3,6 +3,14 @@ using System.Collections;
 
 public abstract class BaseWorldCharacter : MonoBehaviour
 {
+    #region initial stats
+
+    public int _initial_attackMaxComboCount;
+    public AnimationClip[] _initial_attackAnimations;
+    public AnimationClip _initial_activeAbilityAnimations;
+
+    #endregion
+
     public float _currentHealth;
     public float _initialHealth;
     public Faction _faction;
@@ -55,7 +63,5 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 
     public abstract void SetDestinationPosition(Vector3 destination);
 
-    public abstract void OverrideAttackAnimations(AnimationClip[] overridedAnimations);
-
-    public abstract void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations);
+    public abstract void SetupEquipmentLogic(BaseEquipment equipment, bool equip);
 }

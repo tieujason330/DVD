@@ -123,7 +123,7 @@ public class PlayerMovement : MonoBehaviour {
 
     void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
     {
-        if (_playerCombat.IsAttacking) return;
+        if (_playerCombat._playerMain.IsAttacking) return;
 
         Rotating(-vertical, -horizontal);
 

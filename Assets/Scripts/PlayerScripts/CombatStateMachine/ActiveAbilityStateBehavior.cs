@@ -18,6 +18,6 @@ public class ActiveAbilityStateBehavior : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _playerCombat.IsUsingAbility = false;
+        _playerCombat._playerMain.IsUsingAbility = false;
     }
 }

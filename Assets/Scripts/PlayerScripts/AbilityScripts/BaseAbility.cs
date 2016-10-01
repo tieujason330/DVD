@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseAbility : MonoBehaviour {
+public class BaseAbility : MonoBehaviour
+{
+
+    public AnimationClip _abilityAnimations;
 
 	// Use this for initialization
 	void Start () {

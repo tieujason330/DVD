@@ -5,7 +5,7 @@ public class IdleStateBehavior : StateMachineBehaviour
 {
 
     private PlayerCombat _playerCombat;
-    public bool _hasAttacked;
+    private bool _hasAttacked;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -17,9 +17,17 @@ public class IdleStateBehavior : StateMachineBehaviour
     {
         if (_hasAttacked) return;
 
-        if (_playerCombat._playerMain.InputAttack)
+        var leftInput = _playerCombat._playerMain.InputLeftArm;
+        var rightInput = _playerCombat._playerMain.InputRightArm;
+
+        if (rightInput || leftInput)
         {
-            _playerCombat.MeleePressedInState(CombatState.BufferState);
+            string arm = string.Empty;
+            if (rightInput)
+                arm = "RIGHT";
+            else if (leftInput)
+                arm = "LEFT";
+            _playerCombat.MeleePressedInState(CombatState.BufferState, arm);
             _hasAttacked = true;
         }
         else
