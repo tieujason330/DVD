@@ -1725,6 +1725,7 @@ MonoBehaviour:
   _xOffset: 125
   _yOffset: 150
   _size: 32
+  _inputRate: 0.215
   _inventoryCanvas: {fileID: 2007628473}
 --- !u!54 &555158056
 Rigidbody:
