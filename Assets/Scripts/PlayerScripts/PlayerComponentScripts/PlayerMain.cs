@@ -20,7 +20,6 @@ public class PlayerMain : BaseWorldCharacter
     public int _attackMaxComboCountRightArm;
     public int _attackMaxComboCountLeftArm;
     //public bool IsAttacking { get; set; }
-    public bool IsUsingAbility { get; set; }
 
     private float _inputHorizontal;
     private float _inputVertical;
@@ -54,6 +53,7 @@ public class PlayerMain : BaseWorldCharacter
     public bool InputRightArmActiveAbility { get { return _inputRightArmActiveAbility; } }
     public bool InputLeftArmActiveAbility { get { return _inputLeftArmActiveAbility; } }
     public bool InputLegsActiveAbility { get { return _inputLegsActiveAbility; } }
+    public bool IsUsingAbility { get; set; }
 
 
     void Awake()
