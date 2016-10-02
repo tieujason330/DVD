@@ -5,6 +5,11 @@ using System;
 public class TestHelmet : BaseEquipment {
     
     private bool _free;
+    private PlayerInventory _inventoryOwner;
+    private PlayerEquipment _equipmentOwner;
+
+    public Vector3 positionOffSet;
+    public Vector3 roationOffset;
 
     public bool Free
     {
@@ -24,12 +29,21 @@ public class TestHelmet : BaseEquipment {
 
     public override void Equip()
     {
-        throw new NotImplementedException();
+        BaseEquipment currenHeadEquipment = _equipmentOwner.HeadEquipment;
+        if (currenHeadEquipment != null)
+            currenHeadEquipment.Unequip();
+
+        transform.parent = _equipmentOwner.HeadTransform;
+        transform.localPosition = positionOffSet;
+        transform.localRotation= Quaternion.Euler(roationOffset);
+        _equipmentOwner.HeadEquipment = this;
+        GetComponent<Collider>().enabled = false;
+        gameObject.SetActive(true);
     }
 
     public override void Unequip()
     {
-        throw new NotImplementedException();
+        gameObject.SetActive(false);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -38,7 +52,9 @@ public class TestHelmet : BaseEquipment {
         {
             if (collision.collider.tag == "Player")
             {
-                collision.transform.GetComponent<PlayerInventory>().StoreItem(this.gameObject);
+                _equipmentOwner = collision.transform.GetComponent<PlayerEquipment>();
+                _inventoryOwner = collision.transform.GetComponent<PlayerInventory>();
+                _inventoryOwner.StoreItem(this.gameObject);
                 _free = false;
             }
         }

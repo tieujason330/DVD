@@ -40,6 +40,7 @@ public class PlayerMain : BaseWorldCharacter
 
     private bool _inputActiveAbility01;
     private bool _inventoryOpen;
+    private bool _paused;
 
     //Getters
     public float InputHorizontal { get { return _inputHorizontal; } }
@@ -147,11 +148,15 @@ public class PlayerMain : BaseWorldCharacter
 
     void Update_PlayerComponents()
     {
-        _playerMovement.PlayerUpdate();
-        _playerCombat.PlayerUpdate();
+       
 
         if (_inventoryOpen)
             _playerInventory.PlayerUpdate();
+        else
+        {
+            _playerMovement.PlayerUpdate();
+            _playerCombat.PlayerUpdate();
+        }
         
     }
 

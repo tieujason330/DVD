@@ -14,12 +14,79 @@ public class PlayerEquipment : MonoBehaviour {
     public BaseEquipment _leftArmEquipment;
     public BaseEquipment _legsEquipment;
 
+    private Transform _headTransform;
+    private Transform _torsoTransform;
+    private Transform _rightArmTransform;
+    private Transform _leftArmTransform;
+    private Transform _legsTransform;
+
+
+    #region Properties
+    public Transform HeadTransform
+    {
+        get { return _headTransform; }
+    }
+
+    public Transform TorsoTransform
+    {
+        get { return _torsoTransform; }
+    }
+
+    public Transform RightArmTransfrom
+    {
+        get { return _rightArmTransform; }
+    }
+
+    public Transform LeftArmTransform
+    {
+        get { return _leftArmTransform; }
+    }
+
+    public BaseEquipment HeadEquipment
+    {
+        get { return _headEquipment; }
+        set { _headEquipment = value; }
+    }
+    public BaseEquipment TorsoEquipment
+    {
+        get { return _torsoEquipment; }
+        set { _torsoEquipment = value; }
+    }
+    public BaseEquipment RightArmEquipment
+    {
+        get { return _rightArmEquipment; }
+        set { _rightArmEquipment = value; }
+    }
+    public BaseEquipment LeftArmEquipment
+    {
+        get { return _leftArmEquipment; }
+        set { _leftArmEquipment = value; }
+    }
+    public BaseEquipment LegsEquipment
+    {
+        get { return _legsEquipment; }
+        set { _legsEquipment = value; }
+    }
+
+    #endregion
+
     void Awake()
     {
         _animator = GetComponent<Animator>();
         //save original runtime to prevent nesting when overriding (Unity issue)
         _initialRuntimeAnimatorController = _animator.runtimeAnimatorController;
         _playerMain = GetComponent<PlayerMain>();
+
+        if (_headEquipment != null)
+            _headEquipment.Unequip();
+
+        foreach (Transform child in gameObject.GetComponentsInChildren<Transform>())
+        {
+            if (child.gameObject.tag == "PlayerHead")
+            {
+                _headTransform = child;
+            }
+        }
     }
     
     // Use this for initialization
@@ -130,5 +197,4 @@ public class PlayerEquipment : MonoBehaviour {
     public void OverrideActiveAbilityAnimations(AnimationClip overridedAnimations)
     {
     }
-
 }
