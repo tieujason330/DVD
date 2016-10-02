@@ -32,8 +32,10 @@ public class PlayerInventory : MonoBehaviour
     private float _inputHorizontal;
     private float _inputVertical;
 
-   public float _inputRate = 0.25f;
+    public float _inputRate = 0.25f;
     private float _nextInput = 0.0f;
+    public float _iconSize 75/0f; 
+    public float _iconSizeSelected = 90.0f;
 
 
     // This should be assigned the canvas gameobject so that we can edit it directly though the editor
@@ -64,7 +66,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if (_open)
         {
-            UpdateInput();
+            
         }
     }
 
@@ -93,8 +95,6 @@ public class PlayerInventory : MonoBehaviour
 
                 if (_currentColumn < 0)
                     _currentColumn = _maxColumnCount - 1;
-
-                print("COLUMN " + _currentColumn);
             }
 
             if (Mathf.Abs(_inputHorizontal) > 0.5f)
@@ -103,16 +103,14 @@ public class PlayerInventory : MonoBehaviour
 
                 if (_currentRow < 0)
                     _currentRow = _maxRowCount - 1;
-
-                print("ROW" + _currentRow);
             }
 
             if (previousColumn != _currentColumn || previousRow != _currentRow)
             {
                 _nextInput = Time.time + _inputRate;
-                _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(75, 75, 0);
+                _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(_iconSize, _iconSize, 0);
                 _currentSlot = _slots[_currentRow, _currentColumn];
-                _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(90, 90, 0);
+                _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(_iconSizeSelected, _iconSizeSelected, 0);
             }
         }
     }
@@ -130,18 +128,18 @@ public class PlayerInventory : MonoBehaviour
             _currentColumn = 0;
             _currentRow = 0;
             _currentSlot = _slots[0, 0];
-            _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(90, 90, 0);
+            _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(_iconSizeSelected, _iconSizeSelected, 0);
         }
         else
         {
-            _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(75, 75, 0);
+            _currentSlot.GetComponent<RectTransform>().sizeDelta = new Vector3(_iconSize, _iconSize, 0);
         }
 
         return _open;
     }
     public void PlayerUpdate()
     {
-
+        UpdateInput();
     }
 
     public void StoreItem(GameObject pickup)
