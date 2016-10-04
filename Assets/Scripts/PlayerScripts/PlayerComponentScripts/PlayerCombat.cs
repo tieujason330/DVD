@@ -113,15 +113,6 @@ public class PlayerCombat : MonoBehaviour
 
     void ActiveAbilityManagement()
     {
-        //bool performAbility = false;
-
-        //if (_playerMain.InputHeadActiveAbility && _attackComboPoints >= 2)
-        //{
-        //    _attackComboPoints -= 2;
-        //    performAbility = true;
-        //}
-        //_animator.SetBool(_animatorActiveAbility01Parameter, performAbility);
-
         _animator.SetBool(_animatorHeadActiveAbilityParameter, _playerMain.InputHeadActiveAbility);
         _animator.SetBool(_animatorTorsoActiveAbilityParameter, _playerMain.InputTorsoActiveAbility);
         _animator.SetBool(_animatorRightArmActiveAbilityParameter, _playerMain.InputRightArmActiveAbility);
