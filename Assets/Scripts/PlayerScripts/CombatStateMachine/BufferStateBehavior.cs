@@ -6,29 +6,30 @@ public class BufferStateBehavior : StateMachineBehaviour
 
     private PlayerCombat _playerCombat;
     private bool _hasAttacked;
+    private bool _leftInput;
+    private bool _rightInput;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
         _hasAttacked = false;
 
-        if (stateInfo.IsName("MeleeBuffer"))
-            _playerCombat.MeleeInitializeBufferTime();
+        _playerCombat.MeleeInitializeBufferTime();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (_hasAttacked) return;
 
-        var leftInput = _playerCombat._playerMain.InputLeftArm;
-        var rightInput = _playerCombat._playerMain.InputRightArm;
+        _leftInput = _playerCombat._playerMain.InputLeftArm;
+        _rightInput = _playerCombat._playerMain.InputRightArm;
 
-        if (rightInput || leftInput)
+        if (_rightInput || _leftInput)
         {
             string arm = string.Empty;
-            if (rightInput)
+            if (_rightInput)
                 arm = "RIGHT";
-            else if (leftInput)
+            else if (_leftInput)
                 arm = "LEFT";
             _playerCombat.MeleePressedInState(CombatState.BufferState, arm);
             _hasAttacked = true;

@@ -206,6 +206,6 @@ public class BaseAIUnit : BaseWorldCharacter
 
     public override void SetupEquipmentLogic(BaseEquipment equipment, bool equip)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

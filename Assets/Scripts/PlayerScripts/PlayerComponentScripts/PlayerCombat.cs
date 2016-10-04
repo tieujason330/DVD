@@ -33,7 +33,7 @@ public class PlayerCombat : MonoBehaviour
     public float _attackCurrentComboTimer;
     private ComboTimer _attackComboTimerComponent;
     private ComboPoints _attackComboPointsComponent;
-    private float _attackComboTimerDuration = 0.5f;
+    private float _attackComboTimerDuration = 1.0f;
 
     void Awake()
     {

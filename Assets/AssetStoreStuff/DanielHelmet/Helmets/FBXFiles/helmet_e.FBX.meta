@@ -3,7 +3,12 @@ guid: 92ba7fc2acf247e489680510569ee32a
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: helmet_e
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
