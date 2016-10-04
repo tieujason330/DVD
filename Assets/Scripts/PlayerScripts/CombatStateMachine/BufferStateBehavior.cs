@@ -15,6 +15,7 @@ public class BufferStateBehavior : StateMachineBehaviour
         _hasAttacked = false;
 
         _playerCombat.MeleeInitializeBufferTime();
+        _playerCombat.UpdateAttackFields();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
