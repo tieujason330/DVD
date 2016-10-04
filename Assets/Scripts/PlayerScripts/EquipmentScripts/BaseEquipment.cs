@@ -3,6 +3,7 @@ using System.Collections;
 
 public abstract class BaseEquipment : MonoBehaviour
 {
+    public BaseWorldCharacter _myCharacter;
     public ActiveAbility _activeAbility;
     public EquipmentComponent _equipmentComponent;
     public EquipmentType _EquipmentType;
@@ -14,10 +15,16 @@ public abstract class BaseEquipment : MonoBehaviour
     {
         get { return _canEquip; }
     }
+
+    public void Awake()
+    {
+        _myCharacter = GetComponentInParent<BaseWorldCharacter>();
+        _activeAbility = GetComponentInChildren<ActiveAbility>();
+    }
+
     // Use this for initialization
     void Start () {
-	
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {

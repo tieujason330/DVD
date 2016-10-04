@@ -5,6 +5,10 @@ public class ActiveAbility : BaseAbility
 {
     public int _activeCost;
 
+    void Awake()
+    {
+    }
+
 	// Use this for initialization
 	void Start () {
 	

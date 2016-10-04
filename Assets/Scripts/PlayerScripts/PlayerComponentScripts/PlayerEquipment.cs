@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ public class PlayerEquipment : MonoBehaviour {
 
     private Animator _animator;
     private RuntimeAnimatorController _initialRuntimeAnimatorController;
+    private AnimatorOverrideController _overrideController;
     public PlayerMain _playerMain;
 
     public BaseEquipment _headEquipment;
@@ -72,10 +74,14 @@ public class PlayerEquipment : MonoBehaviour {
 
     void Awake()
     {
+        _playerMain = GetComponent<PlayerMain>();
+
         _animator = GetComponent<Animator>();
         //save original runtime to prevent nesting when overriding (Unity issue)
         _initialRuntimeAnimatorController = _animator.runtimeAnimatorController;
-        _playerMain = GetComponent<PlayerMain>();
+        _overrideController = new AnimatorOverrideController();
+        _overrideController.runtimeAnimatorController = _initialRuntimeAnimatorController;
+
 
         if (_headEquipment != null)
             _headEquipment.Unequip();
@@ -123,13 +129,38 @@ public class PlayerEquipment : MonoBehaviour {
     {
         switch (equipment._EquipmentType)
         {
+            case EquipmentType.Helmet:
+                SetupHead();
+                break;
+            case EquipmentType.Armor:
+                SetupTorso(equipment as BaseArmor, equip);
+                break;
             case EquipmentType.MeleeWeapon:
                 SetupMeleeWeapon(equipment as MeleeWeapon, equip);
                 break;
         }
     }
 
-    #region weapon setup
+    #region Head setup
+
+    private void SetupHead()
+    {
+        
+    }
+
+    #endregion
+
+    #region Armor setup
+
+    private void SetupTorso(BaseArmor armor, bool equip)
+    {
+        _playerMain._torsoActiveAbility = armor._activeAbility;
+        SetupActiveAbility(armor._activeAbility, armor._equipmentComponent);
+    }
+
+    #endregion
+
+    #region Left/Right arm setup
 
     void SetupMeleeWeapon(MeleeWeapon meleeWeapon, bool equip)
     {
@@ -137,21 +168,27 @@ public class PlayerEquipment : MonoBehaviour {
         {
             //set up weapon
             if (meleeWeapon._equipmentComponent == EquipmentComponent.LeftArm)
+            {
                 _playerMain._attackMaxComboCountLeftArm = meleeWeapon._maxAttackComboCount;
+                _playerMain._leftArmActiveAbility = meleeWeapon._activeAbility;
+            }
             else if (meleeWeapon._equipmentComponent == EquipmentComponent.RightArm)
+            {
                 _playerMain._attackMaxComboCountRightArm = meleeWeapon._maxAttackComboCount;
+                _playerMain._rightArmActiveAbility = meleeWeapon._activeAbility;
+            }
 
             OverrideEquipmentAnimations(meleeWeapon._attackAnimations, meleeWeapon._equipmentComponent);
 
             //set up weapon's active ability
-            SetupActiveAbility(meleeWeapon._activeAbility);
+            SetupActiveAbility(meleeWeapon._activeAbility, meleeWeapon._equipmentComponent);
         }
         else
         {
             _playerMain._attackMaxComboCountRightArm = _playerMain._initial_attackMaxComboCount;
             OverrideEquipmentAnimations(_playerMain._initial_attackAnimations, meleeWeapon._equipmentComponent);
 
-            SetupActiveAbility(null);
+            SetupActiveAbility(null, meleeWeapon._equipmentComponent);
         }
     }
 
@@ -159,10 +196,10 @@ public class PlayerEquipment : MonoBehaviour {
     {
         if (overridedAnimations.Length == 0) return;
 
-        RuntimeAnimatorController runtime = _initialRuntimeAnimatorController;
-        AnimatorOverrideController over = new AnimatorOverrideController();
-        over.runtimeAnimatorController = runtime;
-        
+        //RuntimeAnimatorController runtime = _initialRuntimeAnimatorController;
+        //AnimatorOverrideController over = new AnimatorOverrideController();
+        //_overrideController.runtimeAnimatorController = runtime;
+
         string animName = string.Empty;
         switch (equipmentComponent)
         {
@@ -175,26 +212,58 @@ public class PlayerEquipment : MonoBehaviour {
         }
 
         for (int i = 0; i < overridedAnimations.Length; i++)
-            over[animName + (i + 1)] = overridedAnimations[i];
+            _overrideController[animName + (i + 1)] = overridedAnimations[i];
 
-        _animator.runtimeAnimatorController = over;
+        _animator.runtimeAnimatorController = _overrideController;
     }
 
     #endregion
 
-    public void SetupActiveAbility(ActiveAbility active)
+    #region Ability setup
+
+    public void SetupActiveAbility(ActiveAbility active, EquipmentComponent equipmentComponent)
     {
         if (active == null)
         {
-            OverrideActiveAbilityAnimations(_playerMain._initial_activeAbilityAnimations);
+            OverrideActiveAbilityAnimations(_playerMain._initial_activeAbilityAnimations, equipmentComponent);
         }
         else
         {
-            OverrideActiveAbilityAnimations(active._abilityAnimations);
+            OverrideActiveAbilityAnimations(active._abilityAnimations, equipmentComponent);
         }
     }
 
-    public void OverrideActiveAbilityAnimations(AnimationClip overridedAnimations)
+    public void OverrideActiveAbilityAnimations(AnimationClip overridedAnimation, EquipmentComponent equipmentComponent)
     {
+        if (overridedAnimation == null) return;
+        //RuntimeAnimatorController runtime = _initialRuntimeAnimatorController;
+        //AnimatorOverrideController over = new AnimatorOverrideController();
+        //_overrideController.runtimeAnimatorController = runtime;
+
+        string animName = string.Empty;
+        switch (equipmentComponent)
+        {
+            case EquipmentComponent.Head:
+                animName = "HeadActiveAbility";
+                break;
+            case EquipmentComponent.Torso:
+                animName = "TorsoActiveAbility";
+                break;
+            case EquipmentComponent.RightArm:
+                animName = "RightArmActiveAbility";
+                break;
+            case EquipmentComponent.LeftArm:
+                animName = "LeftArmActiveAbility";
+                break;
+            case EquipmentComponent.Legs:
+                animName = "LegsActiveAbility";
+                break;
+        }
+
+        _overrideController[animName] = overridedAnimation;
+
+        _animator.runtimeAnimatorController = _overrideController;
     }
+
+    #endregion
 }

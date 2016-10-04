@@ -76,6 +76,8 @@ public class PlayerMovement : MonoBehaviour {
 
     public void PlayerUpdate()
     {
+        if (!_animator.isInitialized) return;
+
         _animator.SetBool(_animatorAimParameter, IsAiming());
         _animator.SetFloat(_animatorHorizontalParameter, _playerMain.InputHorizontal);
         _animator.SetFloat(_animatorVerticalParameter, _playerMain.InputVertical);

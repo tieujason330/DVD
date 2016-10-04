@@ -35,12 +35,6 @@ public class PlayerCombat : MonoBehaviour
     private ComboPoints _attackComboPointsComponent;
     private float _attackComboTimerDuration = 1.0f;
 
-    private ActiveAbility _headActiveAbility;
-    private ActiveAbility _torsoActiveAbility;
-    private ActiveAbility _rightArmActiveAbility;
-    private ActiveAbility _leftArmActiveAbility;
-    private ActiveAbility _legsActiveAbility;
-
     void Awake()
     {
         InitializePlayerLogic();
@@ -57,14 +51,14 @@ public class PlayerCombat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Update_ComboTimerLogic();
-        CombatManagement();
+        //Update_ComboTimerLogic();
+        //CombatManagement();
     }
 
     public void PlayerUpdate()
     {
-        //Update_ComboTimerLogic();
-        //CombatManagement();
+        Update_ComboTimerLogic();
+        CombatManagement();
     }
 
     #region Combat logic
@@ -112,6 +106,8 @@ public class PlayerCombat : MonoBehaviour
 
     void CombatManagement()
     {
+        if (!_animator.isInitialized) return;
+
         if (_playerMain.InputRoll)
             _animator.SetTrigger(_animtorRollParameter);
 

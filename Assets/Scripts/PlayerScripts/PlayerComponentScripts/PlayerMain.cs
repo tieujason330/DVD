@@ -60,6 +60,11 @@ public class PlayerMain : BaseWorldCharacter
     public bool InputLegsActiveAbility { get { return _inputLegsActiveAbility; } }
     public bool IsUsingAbility { get; set; }
 
+    public ActiveAbility _headActiveAbility;
+    public ActiveAbility _torsoActiveAbility;
+    public ActiveAbility _rightArmActiveAbility;
+    public ActiveAbility _leftArmActiveAbility;
+    public ActiveAbility _legsActiveAbility;
 
     void Awake()
     {
