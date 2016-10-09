@@ -15,10 +15,16 @@ public class PlayerMain : BaseWorldCharacter
     //public Faction _faction;
     //public CharacterStatus _status;
     //public CharacterAction _action;
+    public float _currentStamina;
+    public float _initialStamina;
+    public float _potentialStaminaRegain = 0.0f;
 
     public const int ATTACK_MAXIMUM_COMBO_COUNT = 6;
     public int _attackMaxComboCountRightArm;
     public int _attackMaxComboCountLeftArm;
+
+    public float _currentCombatPoints;
+    public float _initialCombatPoints = 100.0f;
     //public bool IsAttacking { get; set; }
 
     private float _inputHorizontal;
@@ -42,6 +48,13 @@ public class PlayerMain : BaseWorldCharacter
     private bool _inventoryOpen;
     private bool _paused;
 
+
+    public ActiveAbility _headActiveAbility;
+    public ActiveAbility _torsoActiveAbility;
+    public ActiveAbility _rightArmActiveAbility;
+    public ActiveAbility _leftArmActiveAbility;
+    public ActiveAbility _legsActiveAbility;
+
     //Getters
     public float InputHorizontal { get { return _inputHorizontal; } }
     public float InputVertical { get { return _inputVertical; } }
@@ -60,14 +73,9 @@ public class PlayerMain : BaseWorldCharacter
     public bool InputLegsActiveAbility { get { return _inputLegsActiveAbility; } }
     public bool IsUsingAbility { get; set; }
 
-    public ActiveAbility _headActiveAbility;
-    public ActiveAbility _torsoActiveAbility;
-    public ActiveAbility _rightArmActiveAbility;
-    public ActiveAbility _leftArmActiveAbility;
-    public ActiveAbility _legsActiveAbility;
-
     void Awake()
     {
+        base.Awake();
         _playerCombat = gameObject.GetComponent<PlayerCombat>();
         _playerMovement = gameObject.GetComponent<PlayerMovement>();
         _playerInventory = gameObject.GetComponent<PlayerInventory>();
@@ -102,9 +110,9 @@ public class PlayerMain : BaseWorldCharacter
             //_inputSelectActiveAbility = Input.GetButton("SelectActiveAbility");
             _inputHeadActiveAbility = Input.GetButtonDown("HeadActiveAbility");
             _inputTorsoActiveAbility = Input.GetButtonDown("TorsoActiveAbility");
-            _inputRightArmActiveAbility = Input.GetButtonDown("RightArmActiveAbility");
-            _inputLeftArmActiveAbility = Input.GetButtonDown("LeftArmActiveAbility");
             _inputLegsActiveAbility = Input.GetButtonDown("LegsActiveAbility");
+            _inputRightArm = Input.GetButtonDown("RightArm");
+            _inputLeftArm = Input.GetButtonDown("LeftArm");
 
             SetTriggerInputs();
         }
@@ -122,14 +130,14 @@ public class PlayerMain : BaseWorldCharacter
     private bool _usingLeftTrigger = false;
     void SetTriggerInputs()
     {
-        _inputRightArm = _inputLeftArm = false;
+        _inputRightArmActiveAbility = _inputLeftArmActiveAbility = false;
 
-        if (!Input.GetAxisRaw("RightArm").Equals(0.0f))
+        if (!Input.GetAxisRaw("RightArmActiveAbility").Equals(0.0f))
         {
             if (!_usingRightTrigger)
             {
                 _usingRightTrigger = true;
-                _inputRightArm = true;
+                _inputRightArmActiveAbility = true;
             }
         }
         else
@@ -137,12 +145,12 @@ public class PlayerMain : BaseWorldCharacter
             _usingRightTrigger = false;
         }
 
-        if (!Input.GetAxisRaw("LeftArm").Equals(0.0f))
+        if (!Input.GetAxisRaw("LeftArmActiveAbility").Equals(0.0f))
         {
             if (!_usingLeftTrigger)
             {
                 _usingLeftTrigger = true;
-                _inputLeftArm = true;
+                _inputLeftArmActiveAbility = true;
             }
         }
         else
@@ -153,8 +161,6 @@ public class PlayerMain : BaseWorldCharacter
 
     void Update_PlayerComponents()
     {
-       
-
         if (_inventoryOpen)
             _playerInventory.PlayerUpdate();
         else
@@ -162,17 +168,16 @@ public class PlayerMain : BaseWorldCharacter
             _playerMovement.PlayerUpdate();
             _playerCombat.PlayerUpdate();
         }
-        
     }
 
-    public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
+    public override bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {
-        _playerCombat.GiveDamage(damage, attackedCharacter);
+        return _playerCombat.GiveDamage(damage, attackedCharacter);
     }
 
-    public override void TakeDamage(float damage)
+    public override bool TakeDamage(float damage)
     {
-        _playerCombat.TakeDamage(damage);
+        return _playerCombat.TakeDamage(damage);
     }
 
     public override void SetDestinationPosition(Vector3 destination)

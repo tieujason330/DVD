@@ -14,8 +14,7 @@ public class BufferStateBehavior : StateMachineBehaviour
         _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
         _hasAttacked = false;
 
-        _playerCombat.MeleeInitializeBufferTime();
-        _playerCombat.UpdateAttackFields();
+        _playerCombat.SetCombatState(CombatState.BufferState);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -32,12 +31,12 @@ public class BufferStateBehavior : StateMachineBehaviour
                 arm = "RIGHT";
             else if (_leftInput)
                 arm = "LEFT";
-            _playerCombat.MeleePressedInState(CombatState.BufferState, arm);
+            _playerCombat.MeleePressedInState(arm);
             _hasAttacked = true;
         }
         else
         {
-            _playerCombat.MeleeNotPressedInState(CombatState.BufferState);
+            _playerCombat.MeleeNotPressedInState();
         }
     }
 

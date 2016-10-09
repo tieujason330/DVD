@@ -83,16 +83,16 @@ public class PlayerEquipment : MonoBehaviour {
         _overrideController.runtimeAnimatorController = _initialRuntimeAnimatorController;
 
 
-        if (_headEquipment != null)
-            _headEquipment.Unequip();
+        //if (_headEquipment != null)
+        //    _headEquipment.Unequip();
 
-        foreach (Transform child in gameObject.GetComponentsInChildren<Transform>())
-        {
-            if (child.gameObject.tag == "PlayerHead")
-            {
-                _headTransform = child;
-            }
-        }
+        //foreach (Transform child in gameObject.GetComponentsInChildren<Transform>())
+        //{
+        //    if (child.gameObject.tag == "PlayerHead")
+        //    {
+        //        _headTransform = child;
+        //    }
+        //}
     }
     
     // Use this for initialization
@@ -130,7 +130,7 @@ public class PlayerEquipment : MonoBehaviour {
         switch (equipment._EquipmentType)
         {
             case EquipmentType.Helmet:
-                SetupHead();
+                SetupHead(equipment as BaseHelmet, equip);
                 break;
             case EquipmentType.Armor:
                 SetupTorso(equipment as BaseArmor, equip);
@@ -143,9 +143,9 @@ public class PlayerEquipment : MonoBehaviour {
 
     #region Head setup
 
-    private void SetupHead()
+    private void SetupHead(BaseHelmet helmet, bool equip)
     {
-        
+        SetupActiveAbility(helmet._activeAbility, helmet._equipmentComponent);
     }
 
     #endregion
@@ -154,7 +154,6 @@ public class PlayerEquipment : MonoBehaviour {
 
     private void SetupTorso(BaseArmor armor, bool equip)
     {
-        _playerMain._torsoActiveAbility = armor._activeAbility;
         SetupActiveAbility(armor._activeAbility, armor._equipmentComponent);
     }
 
@@ -170,12 +169,10 @@ public class PlayerEquipment : MonoBehaviour {
             if (meleeWeapon._equipmentComponent == EquipmentComponent.LeftArm)
             {
                 _playerMain._attackMaxComboCountLeftArm = meleeWeapon._maxAttackComboCount;
-                _playerMain._leftArmActiveAbility = meleeWeapon._activeAbility;
             }
             else if (meleeWeapon._equipmentComponent == EquipmentComponent.RightArm)
             {
                 _playerMain._attackMaxComboCountRightArm = meleeWeapon._maxAttackComboCount;
-                _playerMain._rightArmActiveAbility = meleeWeapon._activeAbility;
             }
 
             OverrideEquipmentAnimations(meleeWeapon._attackAnimations, meleeWeapon._equipmentComponent);
@@ -223,14 +220,28 @@ public class PlayerEquipment : MonoBehaviour {
 
     public void SetupActiveAbility(ActiveAbility active, EquipmentComponent equipmentComponent)
     {
-        if (active == null)
+        switch (equipmentComponent)
         {
-            OverrideActiveAbilityAnimations(_playerMain._initial_activeAbilityAnimations, equipmentComponent);
+            case EquipmentComponent.Head:
+                _playerMain._headActiveAbility = active;
+                break;
+            case EquipmentComponent.Torso:
+                _playerMain._torsoActiveAbility = active;
+                break;
+            case EquipmentComponent.RightArm:
+                _playerMain._rightArmActiveAbility = active;
+                break;
+            case EquipmentComponent.LeftArm:
+                _playerMain._leftArmActiveAbility = active;
+                break;
+            case EquipmentComponent.Legs:
+                _playerMain._legsActiveAbility = active;
+                break;
         }
-        else
-        {
-            OverrideActiveAbilityAnimations(active._abilityAnimations, equipmentComponent);
-        }
+
+        OverrideActiveAbilityAnimations(
+            active == null ? _playerMain._initial_activeAbilityAnimations : active._abilityAnimations,
+            equipmentComponent);
     }
 
     public void OverrideActiveAbilityAnimations(AnimationClip overridedAnimation, EquipmentComponent equipmentComponent)

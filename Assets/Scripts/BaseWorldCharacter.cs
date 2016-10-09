@@ -25,10 +25,11 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 
     public bool IsAttacking { get; set; }
 
-    void Awake()
+    public void Awake()
     {
         _attackFrame = false;
         _action = CharacterAction.None;
+        _currentHealth = _initialHealth;
     }
 
     // Use this for initialization
@@ -43,8 +44,8 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 
     public bool IsAiming { get; set; }
     //public abstract bool IsAttacking();
-    public abstract void GiveDamage(float damage, BaseWorldCharacter attackedCharacter);
-    public abstract void TakeDamage(float damage);
+    public abstract bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter);
+    public abstract bool TakeDamage(float damage);
 
     public void AttackAnimationEvent()
     {

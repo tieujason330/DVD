@@ -11,6 +11,7 @@ public class IdleStateBehavior : StateMachineBehaviour
     {
         _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
         _hasAttacked = false;
+        _playerCombat.SetCombatState(CombatState.IdleState);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -27,12 +28,12 @@ public class IdleStateBehavior : StateMachineBehaviour
                 arm = "RIGHT";
             else if (leftInput)
                 arm = "LEFT";
-            _playerCombat.MeleePressedInState(CombatState.BufferState, arm);
+            _playerCombat.MeleePressedInState(arm);
             _hasAttacked = true;
         }
         else
         {
-            _playerCombat.MeleeNotPressedInState(CombatState.IdleState);
+            _playerCombat.MeleeNotPressedInState();
         }
     }
 }

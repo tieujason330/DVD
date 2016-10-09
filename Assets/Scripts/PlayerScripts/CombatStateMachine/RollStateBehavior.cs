@@ -8,10 +8,11 @@ public class RollStateBehavior : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
-        _playerCombat.StopMeleeCombo(CombatState.RollState);
+        _playerCombat.SetCombatState(CombatState.RollState);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        _playerCombat.MeleeNotPressedInState();
     }
 }

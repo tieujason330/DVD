@@ -4,9 +4,11 @@ using System.Collections;
 public class ActiveAbility : BaseAbility
 {
     public int _activeCost;
+    private BaseAbilityEffect _activeEffect;
 
     void Awake()
     {
+        _activeEffect = GetComponentInChildren<BaseAbilityEffect>();
     }
 
 	// Use this for initialization
@@ -21,5 +23,7 @@ public class ActiveAbility : BaseAbility
 
     public virtual void Execute()
     {
+        if (_activeEffect != null)
+            _activeEffect.Execute();
     }
 }

@@ -134,7 +134,7 @@ public class BaseAIUnit : BaseWorldCharacter
         _animator.SetBool(_animatorAttackParameter, _attackBool);
     }
 
-    public override void TakeDamage(float damage)
+    public override bool TakeDamage(float damage)
     {
         _animator.SetTrigger(_animatorDamagedParameter);
         if (_currentHealth > damage)
@@ -144,6 +144,7 @@ public class BaseAIUnit : BaseWorldCharacter
             _currentHealth = 0;
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
+        return true;
     }
 
     //public virtual bool IsAttacking()
@@ -159,10 +160,16 @@ public class BaseAIUnit : BaseWorldCharacter
     //    return false;
     //}
 
-    public override void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
+    public override bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {
         if (attackedCharacter != null)
-            attackedCharacter.TakeDamage(damage);
+        {
+            if (attackedCharacter.TakeDamage(damage))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void FollowDetectionCharacter(BaseWorldCharacter character)

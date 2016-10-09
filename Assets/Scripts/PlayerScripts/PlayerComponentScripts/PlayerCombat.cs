@@ -28,12 +28,22 @@ public class PlayerCombat : MonoBehaviour
     //private int _attackMaxComboCount = 6;
     private int _rightComboCounter;
     private int _leftComboCounter;
-    private int _attackComboPoints;
+
     public float _attackInitialComboTimer;
     public float _attackCurrentComboTimer;
-    private ComboTimer _attackComboTimerComponent;
-    private ComboPoints _attackComboPointsComponent;
-    private float _attackComboTimerDuration = 1.0f;
+    private CombatTimer _attackComboTimerComponent;
+    public float _attackComboTimerDuration = 0.5f;
+
+    public float _staminaRegenerationSpeed = 10.0f;
+
+    //public float _potentialStaminaRegain = 0.0f;
+    private float _potentialCombatPointsGain = 0.0f;
+    private float tempRightStaminaCost = 10.0f;
+    private float tempLeftStaminaCost = 20.0f;
+    private bool _rightArmAttack = false;
+    private bool _leftArmAttack = false;
+
+    private CombatState _combatState = CombatState.UndeterminedState;
 
     void Awake()
     {
@@ -55,13 +65,16 @@ public class PlayerCombat : MonoBehaviour
         //CombatManagement();
     }
 
+    /// <summary>
+    /// Called by PlayerMain update
+    /// </summary>
     public void PlayerUpdate()
     {
         Update_ComboTimerLogic();
         CombatManagement();
     }
 
-    #region Combat logic
+    #region initialize logic
 
     void InitializePlayerLogic()
     {
@@ -92,11 +105,14 @@ public class PlayerCombat : MonoBehaviour
 
     void InitializeComboLogic()
     {
-        _attackComboTimerComponent = GetComponentInChildren<ComboTimer>();
+        _attackComboTimerComponent = GetComponentInChildren<CombatTimer>();
         _attackComboTimerComponent.gameObject.SetActive(false);
-        _attackComboPointsComponent = GetComponentInChildren<ComboPoints>();
         _attackCurrentComboTimer = _attackInitialComboTimer;
     }
+
+    #endregion
+
+    #region update logic
 
     void Update_ComboTimerLogic()
     {
@@ -108,24 +124,114 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!_animator.isInitialized) return;
 
-        if (_playerMain.InputRoll)
-            _animator.SetTrigger(_animtorRollParameter);
-
+        MeleeAttackManagement();
+        RollManagement();
         ActiveAbilityManagement();
+    }
+
+    void RollManagement()
+    {
+        if (_playerMain.InputRoll && !_playerMain.IsUsingAbility)
+        {
+            if (_playerMain._currentStamina > 0.0f)
+            {
+                StaminaCostLogic(30.0f);
+                _animator.SetTrigger(_animtorRollParameter);
+            }
+        }
+    }
+
+    //need to replace temp costs with weapon costs
+    void MeleeAttackManagement()
+    {
+        float costMultiplier = 1.0f;
+
+        if (_combatState == CombatState.RollState || _combatState == CombatState.ActiveAbilityState)
+            return;
+
+        //if trying to spam attack during attack anims, punish w/ stamina cost
+        if (_combatState == CombatState.AttackState)
+            costMultiplier = 0.5f;
+
+        if (_playerMain.InputRightArm)
+        {
+            if (_playerMain._currentStamina > 0.0f)
+            {
+                StaminaCostLogic(tempRightStaminaCost * costMultiplier);
+                _rightArmAttack = true;
+            }
+            else
+                _rightArmAttack = false;
+        }
+        else if (_playerMain.InputLeftArm)
+        {
+            if (_playerMain._currentStamina > 0.0f)
+            {
+                StaminaCostLogic(tempLeftStaminaCost * costMultiplier);
+                _leftArmAttack = true;
+            }
+            else
+                _leftArmAttack = false;
+        }
+        else
+        {
+            _rightArmAttack = _leftArmAttack = false;
+        }
     }
 
     void ActiveAbilityManagement()
     {
-        _animator.SetBool(_animatorHeadActiveAbilityParameter, _playerMain.InputHeadActiveAbility);
-        _animator.SetBool(_animatorTorsoActiveAbilityParameter, _playerMain.InputTorsoActiveAbility);
-        _animator.SetBool(_animatorRightArmActiveAbilityParameter, _playerMain.InputRightArmActiveAbility);
-        _animator.SetBool(_animatorLeftArmActiveAbilityParameter, _playerMain.InputLeftArmActiveAbility);
-        _animator.SetBool(_animatorLegsActiveAbilityParameter, _playerMain.InputLegsActiveAbility);
-        var usingAbility = _playerMain.InputHeadActiveAbility || _playerMain.InputTorsoActiveAbility ||
-                           _playerMain.InputRightArmActiveAbility || _playerMain.InputLeftArmActiveAbility ||
-                           _playerMain.InputLegsActiveAbility;
-        _animator.SetBool(_animatorUsingActiveAbilityParameter, usingAbility);
+        if (_playerMain._headActiveAbility != null)
+        {
+            _animator.SetBool(_animatorHeadActiveAbilityParameter, _playerMain.InputHeadActiveAbility);
+            if (_playerMain.InputHeadActiveAbility)
+            {
+                _playerMain._headActiveAbility.Execute();
+            }
+        }
+
+        if (_playerMain._torsoActiveAbility != null)
+        {
+            _animator.SetBool(_animatorTorsoActiveAbilityParameter, _playerMain.InputTorsoActiveAbility);
+            if (_playerMain.InputTorsoActiveAbility)
+            {
+                _playerMain._torsoActiveAbility.Execute();
+            }
+        }
+
+        if (_playerMain._rightArmActiveAbility != null)
+        {
+            _animator.SetBool(_animatorRightArmActiveAbilityParameter, _playerMain.InputRightArmActiveAbility);
+            if (_playerMain.InputRightArmActiveAbility)
+            {
+                _playerMain._rightArmActiveAbility.Execute();
+            }
+        }
+
+        if (_playerMain._leftArmActiveAbility != null)
+        {
+            _animator.SetBool(_animatorLeftArmActiveAbilityParameter, _playerMain.InputLeftArmActiveAbility);
+            if (_playerMain.InputLeftArmActiveAbility)
+            {
+                _playerMain._leftArmActiveAbility.Execute();
+            }
+        }
+
+        if (_playerMain._legsActiveAbility != null)
+        {
+            _animator.SetBool(_animatorLegsActiveAbilityParameter, _playerMain.InputLegsActiveAbility);
+            if (_playerMain.InputLegsActiveAbility)
+            {
+                _playerMain._legsActiveAbility.Execute();
+            }
+        }
+
+        _animator.SetBool(_animatorUsingActiveAbilityParameter, _playerMain.IsUsingAbility);
     }
+
+    #endregion
+
+    #region combo timer
 
     void ComboTimerTick()
     {
@@ -153,44 +259,91 @@ public class PlayerCombat : MonoBehaviour
         _animator.SetBool(_animtorComboTimerOnParameter, false);
     }
 
-    //public void SetupEquipmentLogic(int maxComboCount, AnimationClip[] overridedAnimations)
-    //{
-    //    _attackMaxComboCount = maxComboCount;
-    //    OverrideAttackAnimations(overridedAnimations);
-    //}
+    #endregion
 
-    //public void OverrideAttackAnimations(AnimationClip[] overridedAnimations = null)
-    //{
-    //    if (overridedAnimations == null)
-    //    {
-    //        //reset character animations
-    //        return;
-    //    }
+    #region stamina logic
 
-    //    RuntimeAnimatorController runtime = _animator.runtimeAnimatorController;
-    //    AnimatorOverrideController over = new AnimatorOverrideController();
-    //    over.runtimeAnimatorController = runtime;
-
-    //    string animName = "MeleeAttack0";
-
-    //    for (int i = 0; i < overridedAnimations.Length && i < ATTACK_MAXIMUM_COMBO_COUNT; i++)
-    //    {
-    //        over[animName + (i + 1)] = overridedAnimations[i];
-    //    }
-
-
-    //    _animator.runtimeAnimatorController = over;
-    //}
-
-    public void StopMeleeCombo(CombatState state)
+    void StaminaRegeneration(float speed)
     {
-        if (state == CombatState.RollState)
+        if (_playerMain._currentStamina < _playerMain._initialStamina)
+            _playerMain._currentStamina += Time.deltaTime * speed;
+    }
+
+    void StaminaCostLogic(float staminaCost)
+    {
+        var combatPointsGain = 0.0f;
+        if (_playerMain._currentStamina >= staminaCost)
+        {
+            _playerMain._currentStamina -= staminaCost;
+            _playerMain._potentialStaminaRegain += staminaCost;
+
+            combatPointsGain = staminaCost;
+        }
+        else
+        {
+            float previousStamina = _playerMain._currentStamina;
+            _playerMain._currentStamina = 0.0f;
+            _playerMain._potentialStaminaRegain += previousStamina;
+
+            combatPointsGain = previousStamina;
+        }
+
+        _potentialCombatPointsGain = combatPointsGain;
+    }
+
+    public void StaminaGainBack()
+    {
+        _playerMain._currentStamina += _playerMain._potentialStaminaRegain;
+        _playerMain._potentialStaminaRegain = 0.0f;
+    }
+
+    #endregion
+
+    #region combat points logic
+
+    private void IncreaseCombatPoints()
+    {
+        _playerMain._currentCombatPoints += _potentialCombatPointsGain;
+        if (_playerMain._currentCombatPoints > _playerMain._initialCombatPoints)
+            _playerMain._currentCombatPoints = _playerMain._initialCombatPoints;
+    }
+
+    private void CombatPointsDrain(float speed)
+    {
+        if (_playerMain._currentCombatPoints > 0.0f)
+            _playerMain._currentCombatPoints -= Time.deltaTime * speed;
+
+        if (_playerMain._currentCombatPoints < 0.0f)
+            _playerMain._currentCombatPoints = 0.0f;
+    }
+
+    #endregion
+
+    #region state machine logic
+
+    public void SetCombatState(CombatState combatState)
+    {
+        _combatState = combatState;
+
+        if (_combatState == CombatState.BufferState)
+        {
+            MeleeInitializeBufferTime();
+            UpdateAttackFields();
+        }
+        else if (_combatState == CombatState.ActiveAbilityState || _combatState == CombatState.RollState)
+        {
+            StopMeleeCombo();
+        }
+    }
+
+    private void StopMeleeCombo()
+    {
+        if (_combatState == CombatState.RollState)
         {
             _leftComboCounter = 0;
             _rightComboCounter = 0;
-            _attackComboPoints = 0;
         }
-        else if (state == CombatState.ActiveAbilityState)
+        else if (_combatState == CombatState.ActiveAbilityState)
         {
             _playerMain.IsUsingAbility = true;
         }
@@ -199,34 +352,41 @@ public class PlayerCombat : MonoBehaviour
         UpdateAttackFields();
     }
 
-    public void MeleeInitializeBufferTime()
+    private void MeleeInitializeBufferTime()
     {
         ResetComboTimer();
     }
 
-    public void MeleeNotPressedInState(CombatState state = CombatState.UndeterminedState)
+    public void MeleeNotPressedInState()
     {
-        //if (state == MeleeState.BufferState)
-        //{
-        //    ResetComboTimer(animStateInfo.length);
-        //}
-        if (state == CombatState.IdleState)
+        if (_combatState == CombatState.BufferState)
+        {
+            //StaminaRegeneration(_staminaRegenerationSpeed / 2.0f);
+        }
+        else if (_combatState == CombatState.IdleState)
         {
             _leftComboCounter = 0;
             _rightComboCounter = 0;
-            _attackComboPoints = 0;
+
+            _playerMain._potentialStaminaRegain = 0.0f;
+            StaminaRegeneration(_staminaRegenerationSpeed);
+            CombatPointsDrain(_staminaRegenerationSpeed * 0.5f);
+        }
+        else if (_combatState == CombatState.RollState)
+        {
+            CombatPointsDrain(_staminaRegenerationSpeed * 0.5f);
         }
 
         UpdateAttackFields();
     }
 
-    public void MeleePressedInState(CombatState state, string arm = "")
+    public void MeleePressedInState(string arm = "")
     {
-        if (state == CombatState.AttackState)
+        if (_combatState == CombatState.AttackState)
         {
-            _attackComboPoints = 0;
+            _playerMain._potentialStaminaRegain = 0.0f;
         }
-        else if (state == CombatState.BufferState)
+        else if (_combatState == CombatState.BufferState || _combatState == CombatState.IdleState)
         {
             if (arm.Equals("RIGHT"))
             {
@@ -234,9 +394,6 @@ public class PlayerCombat : MonoBehaviour
                     _rightComboCounter = 1;
                 else
                     _rightComboCounter++;
-
-                if (_attackComboPoints < _playerMain._attackMaxComboCountRightArm)
-                    _attackComboPoints++;
             }
 
             if (arm.Equals("LEFT"))
@@ -245,34 +402,40 @@ public class PlayerCombat : MonoBehaviour
                     _leftComboCounter = 1;
                 else
                     _leftComboCounter++;
-
-                if (_attackComboPoints < _playerMain._attackMaxComboCountLeftArm)
-                    _attackComboPoints++;
             }
-
             DisableComboTimer();
         }
 
         UpdateAttackFields();
     }
 
-    public void UpdateAttackFields()
+    private void UpdateAttackFields()
     {
-        _attackComboPointsComponent.SetComboPoints(_attackComboPoints, _playerMain._attackMaxComboCountRightArm);
-
         _animator.SetInteger(_animatorRightAttackComboCounterParameter, _rightComboCounter);
         _animator.SetInteger(_animatorLeftAttackComboCounterParameter, _leftComboCounter);
-        _animator.SetBool(_animatorRightArmParameter, !_playerMain.IsUsingAbility && _playerMain.InputRightArm);
-        _animator.SetBool(_animatorLeftArmParameter, !_playerMain.IsUsingAbility && _playerMain.InputLeftArm);
+
+        _animator.SetBool(_animatorRightArmParameter, !_playerMain.IsUsingAbility && _rightArmAttack);
+        _animator.SetBool(_animatorLeftArmParameter, !_playerMain.IsUsingAbility && _leftArmAttack);
     }
 
-    public void GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
+    #endregion
+
+    #region damage logic
+
+    public bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {
         if (attackedCharacter != null)
-            attackedCharacter.TakeDamage(damage);
+        {
+            if (attackedCharacter.TakeDamage(damage))
+            {
+                IncreaseCombatPoints();
+                return true;
+            }
+        }
+        return true;
     }
 
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         _animator.SetTrigger(_animtorDamagedParameter);
         if (_playerMain._currentHealth > damage)
@@ -284,7 +447,9 @@ public class PlayerCombat : MonoBehaviour
             _playerMain._currentHealth = 0;
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _playerMain._currentHealth));
+        return true;
     }
 
     #endregion
+
 }

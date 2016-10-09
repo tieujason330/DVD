@@ -9,6 +9,8 @@ public abstract class BaseEquipment : MonoBehaviour
     public EquipmentType _EquipmentType;
     public Sprite _itemIcon;
 
+    public bool _equipped;
+
     private bool _canEquip;
 
     public bool CanEquip
@@ -20,6 +22,7 @@ public abstract class BaseEquipment : MonoBehaviour
     {
         _myCharacter = GetComponentInParent<BaseWorldCharacter>();
         _activeAbility = GetComponentInChildren<ActiveAbility>();
+        _equipped = false;
     }
 
     // Use this for initialization
