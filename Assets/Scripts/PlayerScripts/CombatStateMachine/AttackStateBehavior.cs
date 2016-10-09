@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor.Animations;
 using UnityEngine.Experimental.Director;
 
 public class AttackStateBehavior : StateMachineBehaviour
 {
-
+    private AnimatorState _animatorState;
     private PlayerCombat _playerCombat;
     private bool _hasAttacked;
 
@@ -12,7 +13,6 @@ public class AttackStateBehavior : StateMachineBehaviour
     {
         _playerCombat = GameObject.FindGameObjectWithTag(Consts.TAG_PLAYER).GetComponent<PlayerCombat>();
         _hasAttacked = false;
-        _playerCombat._playerMain.IsAttacking = true;
         _playerCombat.SetCombatState(CombatState.AttackState);
     }
 
@@ -29,6 +29,6 @@ public class AttackStateBehavior : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _playerCombat._playerMain.IsAttacking = false;
+        _playerCombat.ExitCombatState(CombatState.AttackState);
     }
 }

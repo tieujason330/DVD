@@ -7,6 +7,8 @@ public class BaseAbilityEffect : MonoBehaviour {
     private ParticleSystem.EmissionModule _emissionModule;
     private ActiveAbility _activeAbility;
 
+    public GameObject _parent;
+
     void Awake()
     {
         _particleSystem = GetComponent<ParticleSystem>();
@@ -50,7 +52,7 @@ public class BaseAbilityEffect : MonoBehaviour {
         
     }
 
-    private void Reset()
+    public void Reset()
     {
         _emissionModule.enabled = false;
         _particleSystem.Stop();

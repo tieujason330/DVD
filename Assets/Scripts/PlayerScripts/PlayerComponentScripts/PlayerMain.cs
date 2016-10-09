@@ -21,7 +21,14 @@ public class PlayerMain : BaseWorldCharacter
 
     public const int ATTACK_MAXIMUM_COMBO_COUNT = 6;
     public int _attackMaxComboCountRightArm;
+    public float _attackRightArmCost;
+    public float _attackRightArmPunishMultiplier;
+    public float _attackRightArmCombatPointsGainMultiplier;
+
     public int _attackMaxComboCountLeftArm;
+    public float _attackLeftArmCost;
+    public float _attackLeftArmPunishMultiplier;
+    public float _attackLeftArmCombatPointsGainMultiplier;
 
     public float _currentCombatPoints;
     public float _initialCombatPoints = 100.0f;

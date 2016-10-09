@@ -23,7 +23,9 @@ public abstract class BaseWorldCharacter : MonoBehaviour
     public BaseWorldCharacter _followDetectionCharacter = null;
     public BaseWorldCharacter _attackDetectionCharacter = null;
 
-    public bool IsAttacking { get; set; }
+    public bool IsAttacking { get { return IsRightAttacking || IsLeftAttacking; } }
+    public bool IsLeftAttacking { get; set; }
+    public bool IsRightAttacking { get; set; }
 
     public void Awake()
     {

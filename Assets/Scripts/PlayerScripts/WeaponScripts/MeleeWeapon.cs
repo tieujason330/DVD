@@ -10,6 +10,10 @@ public class MeleeWeapon : BaseWeapon
     public int _maxAttackComboCount;
     public AnimationClip[] _attackAnimations;
     public bool _isEquipped;
+    private bool _isPlayerAttacking;
+    public float _staminaCost;
+    public float _punishMultiplier;
+    public float _combatPointsGainMultiplier;
 
     void Awake()
     {
@@ -26,10 +30,12 @@ public class MeleeWeapon : BaseWeapon
     // Update is called once per frame
     void Update()
     {
-        if (_myCharacter.IsAttacking && !_collisionEntered)
+        IsPlayerAttacking();
+
+        if (_isPlayerAttacking && !_collisionEntered)
             _collider.enabled = true;
 
-        if (!_myCharacter.IsAttacking)
+        if (!_isPlayerAttacking)
         {
             _collider.enabled = false;
             _collisionEntered = false;
@@ -42,7 +48,7 @@ public class MeleeWeapon : BaseWeapon
         _collider.enabled = false;
         BaseWorldCharacter attackedCharacter = collider.gameObject.GetComponent<BaseWorldCharacter>();
         if (attackedCharacter != null)
-            _myCharacter.GiveDamage(CalculateDamage(), attackedCharacter);
+            MyCharacter.GiveDamage(CalculateDamage(), attackedCharacter);
     }
 
     void OnEnable()
@@ -55,6 +61,22 @@ public class MeleeWeapon : BaseWeapon
         Unequip();
     }
 
+    private void IsPlayerAttacking()
+    {
+        if (_equipmentComponent == EquipmentComponent.LeftArm)
+        {
+            _isPlayerAttacking = MyCharacter.IsLeftAttacking;
+        }
+        else if (_equipmentComponent == EquipmentComponent.RightArm)
+        {
+            _isPlayerAttacking = MyCharacter.IsRightAttacking;
+        }
+        else
+        {
+            _isPlayerAttacking = false;
+        }
+    }
+
     private float CalculateDamage()
     {
         return UnityEngine.Random.Range(_minimumDamage, _maximumDamage);
@@ -62,11 +84,11 @@ public class MeleeWeapon : BaseWeapon
 
     public override void Equip()
     {
-        _myCharacter.SetupEquipmentLogic(this, true);
+        MyCharacter.SetupEquipmentLogic(this, true);
     }
 
     public override void Unequip()
     {
-        _myCharacter.SetupEquipmentLogic(this, false);
+        MyCharacter.SetupEquipmentLogic(this, false);
     }
 }

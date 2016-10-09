@@ -145,7 +145,7 @@ public class PlayerEquipment : MonoBehaviour {
 
     private void SetupHead(BaseHelmet helmet, bool equip)
     {
-        SetupActiveAbility(helmet._activeAbility, helmet._equipmentComponent);
+        SetupActiveAbility(helmet.ActiveAbility, helmet._equipmentComponent);
     }
 
     #endregion
@@ -154,7 +154,7 @@ public class PlayerEquipment : MonoBehaviour {
 
     private void SetupTorso(BaseArmor armor, bool equip)
     {
-        SetupActiveAbility(armor._activeAbility, armor._equipmentComponent);
+        SetupActiveAbility(armor.ActiveAbility, armor._equipmentComponent);
     }
 
     #endregion
@@ -169,16 +169,22 @@ public class PlayerEquipment : MonoBehaviour {
             if (meleeWeapon._equipmentComponent == EquipmentComponent.LeftArm)
             {
                 _playerMain._attackMaxComboCountLeftArm = meleeWeapon._maxAttackComboCount;
+                _playerMain._attackLeftArmCost = meleeWeapon._staminaCost;
+                _playerMain._attackLeftArmPunishMultiplier = meleeWeapon._punishMultiplier;
+                _playerMain._attackLeftArmCombatPointsGainMultiplier = meleeWeapon._combatPointsGainMultiplier;
             }
             else if (meleeWeapon._equipmentComponent == EquipmentComponent.RightArm)
             {
                 _playerMain._attackMaxComboCountRightArm = meleeWeapon._maxAttackComboCount;
+                _playerMain._attackRightArmCost = meleeWeapon._staminaCost;
+                _playerMain._attackRightArmPunishMultiplier = meleeWeapon._punishMultiplier;
+                _playerMain._attackRightArmCombatPointsGainMultiplier = meleeWeapon._combatPointsGainMultiplier;
             }
 
             OverrideEquipmentAnimations(meleeWeapon._attackAnimations, meleeWeapon._equipmentComponent);
 
             //set up weapon's active ability
-            SetupActiveAbility(meleeWeapon._activeAbility, meleeWeapon._equipmentComponent);
+            SetupActiveAbility(meleeWeapon.ActiveAbility, meleeWeapon._equipmentComponent);
         }
         else
         {

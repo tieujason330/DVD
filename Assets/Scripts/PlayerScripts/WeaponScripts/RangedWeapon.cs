@@ -29,7 +29,7 @@ public class RangedWeapon : BaseWeapon
 	void Update () {
         //Vector3 forward = transform.TransformDirection(Vector3.forward * 2);
         //Debug.DrawRay(transform.position, forward, Color.green);
-        if (_myCharacter.IsAttacking && _myCharacter.IsAiming)
+        if (MyCharacter.IsAttacking && MyCharacter.IsAiming)
 	    {
 	        Projectile projectile = TakeProjectile();
 	        if (projectile != null)
@@ -41,7 +41,7 @@ public class RangedWeapon : BaseWeapon
 
     public void GiveDamage(BaseWorldCharacter attackedCharacter)
     {
-        _myCharacter.GiveDamage(10.0f, attackedCharacter);
+        MyCharacter.GiveDamage(10.0f, attackedCharacter);
     }
 
     public void AddProjectile(Projectile projectile)

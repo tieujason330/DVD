@@ -3,8 +3,8 @@ using System.Collections;
 
 public abstract class BaseEquipment : MonoBehaviour
 {
-    public BaseWorldCharacter _myCharacter;
-    public ActiveAbility _activeAbility;
+    private BaseWorldCharacter _myCharacter;
+    private ActiveAbility _activeAbility;
     public EquipmentComponent _equipmentComponent;
     public EquipmentType _EquipmentType;
     public Sprite _itemIcon;
@@ -33,6 +33,10 @@ public abstract class BaseEquipment : MonoBehaviour
 	void Update () {
 	
 	}
+
+    public ActiveAbility ActiveAbility { get { return _activeAbility; } }
+
+    public BaseWorldCharacter MyCharacter { get { return _myCharacter; } }
 
     public abstract void Equip();
 

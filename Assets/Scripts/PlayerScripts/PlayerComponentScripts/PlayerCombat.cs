@@ -43,6 +43,12 @@ public class PlayerCombat : MonoBehaviour
     private bool _rightArmAttack = false;
     private bool _leftArmAttack = false;
 
+    private bool _usingRightArm;
+    private bool _usingLeftArm;
+
+    private bool _abilityAnimationPlaying = false;
+    private ActiveAbility _currentActiveAbility;
+
     private CombatState _combatState = CombatState.UndeterminedState;
 
     void Awake()
@@ -150,25 +156,29 @@ public class PlayerCombat : MonoBehaviour
             return;
 
         //if trying to spam attack during attack anims, punish w/ stamina cost
-        if (_combatState == CombatState.AttackState)
-            costMultiplier = 0.5f;
 
         if (_playerMain.InputRightArm)
         {
+            if (_combatState == CombatState.AttackState)
+                costMultiplier = _playerMain._attackRightArmPunishMultiplier;
+
             if (_playerMain._currentStamina > 0.0f)
             {
-                StaminaCostLogic(tempRightStaminaCost * costMultiplier);
-                _rightArmAttack = true;
+                StaminaCostLogic(_playerMain._attackRightArmCost * costMultiplier, _playerMain._attackRightArmCombatPointsGainMultiplier);
+                _rightArmAttack = _usingRightArm = true;
             }
             else
                 _rightArmAttack = false;
         }
         else if (_playerMain.InputLeftArm)
         {
+            if (_combatState == CombatState.AttackState)
+                costMultiplier = _playerMain._attackLeftArmPunishMultiplier;
+
             if (_playerMain._currentStamina > 0.0f)
             {
-                StaminaCostLogic(tempLeftStaminaCost * costMultiplier);
-                _leftArmAttack = true;
+                StaminaCostLogic(_playerMain._attackLeftArmCost * costMultiplier, _playerMain._attackLeftArmCombatPointsGainMultiplier);
+                _leftArmAttack =  _usingLeftArm = true;
             }
             else
                 _leftArmAttack = false;
@@ -186,7 +196,7 @@ public class PlayerCombat : MonoBehaviour
             _animator.SetBool(_animatorHeadActiveAbilityParameter, _playerMain.InputHeadActiveAbility);
             if (_playerMain.InputHeadActiveAbility)
             {
-                _playerMain._headActiveAbility.Execute();
+                SetCurrentActiveAbility(_playerMain._headActiveAbility);
             }
         }
 
@@ -195,7 +205,7 @@ public class PlayerCombat : MonoBehaviour
             _animator.SetBool(_animatorTorsoActiveAbilityParameter, _playerMain.InputTorsoActiveAbility);
             if (_playerMain.InputTorsoActiveAbility)
             {
-                _playerMain._torsoActiveAbility.Execute();
+                SetCurrentActiveAbility(_playerMain._torsoActiveAbility);
             }
         }
 
@@ -204,7 +214,7 @@ public class PlayerCombat : MonoBehaviour
             _animator.SetBool(_animatorRightArmActiveAbilityParameter, _playerMain.InputRightArmActiveAbility);
             if (_playerMain.InputRightArmActiveAbility)
             {
-                _playerMain._rightArmActiveAbility.Execute();
+                SetCurrentActiveAbility(_playerMain._rightArmActiveAbility);
             }
         }
 
@@ -213,7 +223,7 @@ public class PlayerCombat : MonoBehaviour
             _animator.SetBool(_animatorLeftArmActiveAbilityParameter, _playerMain.InputLeftArmActiveAbility);
             if (_playerMain.InputLeftArmActiveAbility)
             {
-                _playerMain._leftArmActiveAbility.Execute();
+                SetCurrentActiveAbility(_playerMain._leftArmActiveAbility);
             }
         }
 
@@ -222,7 +232,7 @@ public class PlayerCombat : MonoBehaviour
             _animator.SetBool(_animatorLegsActiveAbilityParameter, _playerMain.InputLegsActiveAbility);
             if (_playerMain.InputLegsActiveAbility)
             {
-                _playerMain._legsActiveAbility.Execute();
+                SetCurrentActiveAbility(_playerMain._legsActiveAbility);
             }
         }
 
@@ -269,7 +279,7 @@ public class PlayerCombat : MonoBehaviour
             _playerMain._currentStamina += Time.deltaTime * speed;
     }
 
-    void StaminaCostLogic(float staminaCost)
+    void StaminaCostLogic(float staminaCost, float combatPointsMultiplier = 1.0f)
     {
         var combatPointsGain = 0.0f;
         if (_playerMain._currentStamina >= staminaCost)
@@ -277,7 +287,7 @@ public class PlayerCombat : MonoBehaviour
             _playerMain._currentStamina -= staminaCost;
             _playerMain._potentialStaminaRegain += staminaCost;
 
-            combatPointsGain = staminaCost;
+            combatPointsGain = staminaCost * combatPointsMultiplier;
         }
         else
         {
@@ -285,7 +295,7 @@ public class PlayerCombat : MonoBehaviour
             _playerMain._currentStamina = 0.0f;
             _playerMain._potentialStaminaRegain += previousStamina;
 
-            combatPointsGain = previousStamina;
+            combatPointsGain = previousStamina * combatPointsMultiplier;
         }
 
         _potentialCombatPointsGain = combatPointsGain;
@@ -409,6 +419,14 @@ public class PlayerCombat : MonoBehaviour
         UpdateAttackFields();
     }
 
+    public void ExitCombatState(CombatState combatState = CombatState.UndeterminedState)
+    {
+        if (combatState == CombatState.AttackState)
+        {
+            _usingLeftArm = _usingRightArm = false;
+        }
+    }
+
     private void UpdateAttackFields()
     {
         _animator.SetInteger(_animatorRightAttackComboCounterParameter, _rightComboCounter);
@@ -421,6 +439,49 @@ public class PlayerCombat : MonoBehaviour
     #endregion
 
     #region damage logic
+
+    public void ActiveAbilityEffectStartAnimationEvent()
+    {
+        _abilityAnimationPlaying = true;
+        _currentActiveAbility.Execute();
+    }
+
+    public void ActiveAbilityEffectEndAnimationEvent()
+    {
+        _abilityAnimationPlaying = false;
+        ClearActiveAbility();
+    }
+
+    private void ClearActiveAbility()
+    {
+        if (_currentActiveAbility != null)
+        {
+            _currentActiveAbility.Reset();
+            _currentActiveAbility = null;
+        }
+    }
+
+    private void SetCurrentActiveAbility(ActiveAbility active)
+    {
+        ClearActiveAbility();
+        _currentActiveAbility = active;
+    }
+
+    /// <summary>
+    /// Right/Left arm abilities can call this event so need to check
+    /// </summary>
+    public void AttackStartAnimationEvent()
+    {
+        if (_usingRightArm || _playerMain.IsUsingAbility)
+            _playerMain.IsRightAttacking = true;
+        else if (_usingLeftArm || _playerMain.IsUsingAbility)
+            _playerMain.IsLeftAttacking = true;
+    }
+
+    public void AttackEndAnimationEvent()
+    {
+        _playerMain.IsRightAttacking = _playerMain.IsLeftAttacking = false;
+    }
 
     public bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
     {

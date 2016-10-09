@@ -33,11 +33,11 @@ public class BaseHelmet : BaseEquipment {
 
     public override void Equip()
     {
-        _myCharacter.SetupEquipmentLogic(this, true);
+        MyCharacter.SetupEquipmentLogic(this, true);
     }
 
     public override void Unequip()
     {
-        _myCharacter.SetupEquipmentLogic(this, false);
+        MyCharacter.SetupEquipmentLogic(this, false);
     }
 }

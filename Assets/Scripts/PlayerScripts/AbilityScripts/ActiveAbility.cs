@@ -26,4 +26,10 @@ public class ActiveAbility : BaseAbility
         if (_activeEffect != null)
             _activeEffect.Execute();
     }
+
+    public virtual void Reset()
+    {
+        if (_activeEffect != null)
+            _activeEffect.Reset();
+    }
 }
