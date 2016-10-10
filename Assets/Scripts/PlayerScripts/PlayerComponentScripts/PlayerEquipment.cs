@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 public class PlayerEquipment : MonoBehaviour {
 
+    public PlayerMain _playerMain;
+
     private Animator _animator;
     private RuntimeAnimatorController _initialRuntimeAnimatorController;
     private AnimatorOverrideController _overrideController;
-    public PlayerMain _playerMain;
 
     public BaseEquipment _headEquipment;
     public BaseEquipment _torsoEquipment;

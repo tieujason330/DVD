@@ -10,11 +10,29 @@ public class PlayerMain : BaseWorldCharacter
     private PlayerInventory _playerInventory;
     private PlayerEquipment _playerEquipment;
 
+    #region fields in BaseWorldCharacter
     //public float _currentHealth;
     //public float _initialHealth;
     //public Faction _faction;
     //public CharacterStatus _status;
     //public CharacterAction _action;
+    //public int _initial_attackMaxComboCount;
+    //public AnimationClip[] _initial_attackAnimations;
+    //public AnimationClip _initial_activeAbilityAnimations;
+    //public float _currentHealth;
+    //public float _initialHealth;
+    //public Faction _faction;
+    //public CharacterStatus _status;
+    //public CharacterAction _action;
+    //public bool _attackFrame;
+    //public Vector3 _destinationPosition = Vector3.zero;
+    //public BaseWorldCharacter _followDetectionCharacter = null;
+    //public BaseWorldCharacter _attackDetectionCharacter = null;
+    //public bool IsAttacking { get { return IsRightAttacking || IsLeftAttacking; } }
+    //public bool IsLeftAttacking { get; set; }
+    //public bool IsRightAttacking { get; set; }
+    #endregion
+
     public float _currentStamina;
     public float _initialStamina;
     public float _potentialStaminaRegain = 0.0f;
@@ -32,7 +50,8 @@ public class PlayerMain : BaseWorldCharacter
 
     public float _currentCombatPoints;
     public float _initialCombatPoints = 100.0f;
-    //public bool IsAttacking { get; set; }
+
+    public CombatState _combatState = CombatState.UndeterminedState;
 
     private float _inputHorizontal;
     private float _inputVertical;
@@ -41,7 +60,6 @@ public class PlayerMain : BaseWorldCharacter
     private bool _inputSprint;
     private bool _inputRoll;
     private bool _inputFly;
-    //private bool _inputSelectActiveAbility;
 
     private bool _inputHeadActiveAbility;
     private bool _inputTorsoActiveAbility;
@@ -78,7 +96,7 @@ public class PlayerMain : BaseWorldCharacter
     public bool InputRightArmActiveAbility { get { return _inputRightArmActiveAbility; } }
     public bool InputLeftArmActiveAbility { get { return _inputLeftArmActiveAbility; } }
     public bool InputLegsActiveAbility { get { return _inputLegsActiveAbility; } }
-    public bool IsUsingAbility { get; set; }
+    public bool IsUsingAbility { get { return _combatState == CombatState.ActiveAbilityState; } }
 
     void Awake()
     {

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ActiveAbility : BaseAbility
 {
-    public int _activeCost;
+    public float _activeCost;
     private BaseAbilityEffect _activeEffect;
 
     void Awake()

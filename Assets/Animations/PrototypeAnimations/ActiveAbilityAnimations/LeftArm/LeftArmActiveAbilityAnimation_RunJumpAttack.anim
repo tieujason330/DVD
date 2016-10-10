@@ -116004,7 +116004,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.1333334
+  - time: 3.5666666
     functionName: ActiveAbilityEffectEndAnimationEvent
     data: 
     objectReferenceParameter: {fileID: 0}

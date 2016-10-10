@@ -8,6 +8,7 @@ public abstract class BaseEquipment : MonoBehaviour
     public EquipmentComponent _equipmentComponent;
     public EquipmentType _EquipmentType;
     public Sprite _itemIcon;
+    public float _activeAbilityCost;
 
     public bool _equipped;
 
@@ -23,6 +24,7 @@ public abstract class BaseEquipment : MonoBehaviour
         _myCharacter = GetComponentInParent<BaseWorldCharacter>();
         _activeAbility = GetComponentInChildren<ActiveAbility>();
         _equipped = false;
+        _activeAbility._activeCost = _activeAbilityCost;
     }
 
     // Use this for initialization

@@ -29,7 +29,7 @@ public class RangedWeapon : BaseWeapon
 	void Update () {
         //Vector3 forward = transform.TransformDirection(Vector3.forward * 2);
         //Debug.DrawRay(transform.position, forward, Color.green);
-        if (MyCharacter.IsAttacking && MyCharacter.IsAiming)
+        if (MyCharacter.AttackColliderActive && MyCharacter.IsAiming)
 	    {
 	        Projectile projectile = TakeProjectile();
 	        if (projectile != null)

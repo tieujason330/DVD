@@ -1685,7 +1685,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 32
   m_CollisionDetection: 0
 --- !u!65 &65000014122114150
 BoxCollider:
@@ -1740,6 +1740,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fee6d44452229e46831b0fa136eba76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _initial_attackMaxComboCount: 0
+  _initial_attackAnimations: []
+  _initial_activeAbilityAnimations: {fileID: 0}
   _currentHealth: 0
   _initialHealth: 100
   _faction: 1
@@ -1841,8 +1844,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d00d12fa56e89943a6b1ece78f0f5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _equipmentComponent: 0
+  _EquipmentType: 0
+  _itemIcon: {fileID: 0}
+  _activeAbilityCost: 0
+  _equipped: 0
   _minimumDamage: 5
   _maximumDamage: 10
+  _maxAttackComboCount: 0
+  _attackAnimations: []
+  _isEquipped: 0
+  _staminaCost: 0
+  _punishMultiplier: 0
+  _combatPointsGainMultiplier: 0
 --- !u!114 &114000013862787550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1893,6 +1907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a12c62633a4108549b778c93fec89722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainCamera: {fileID: 0}
 --- !u!114 &114000014272544114
 MonoBehaviour:
   m_ObjectHideFlags: 1

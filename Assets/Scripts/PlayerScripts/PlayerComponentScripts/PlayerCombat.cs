@@ -49,7 +49,7 @@ public class PlayerCombat : MonoBehaviour
     private bool _abilityAnimationPlaying = false;
     private ActiveAbility _currentActiveAbility;
 
-    private CombatState _combatState = CombatState.UndeterminedState;
+    //private CombatState _combatState = CombatState.UndeterminedState;
 
     void Awake()
     {
@@ -132,7 +132,7 @@ public class PlayerCombat : MonoBehaviour
 
         MeleeAttackManagement();
         RollManagement();
-        ActiveAbilityManagement();
+        ActiveAbilitiesManagement();
     }
 
     void RollManagement()
@@ -147,19 +147,18 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    //need to replace temp costs with weapon costs
     void MeleeAttackManagement()
     {
         float costMultiplier = 1.0f;
 
-        if (_combatState == CombatState.RollState || _combatState == CombatState.ActiveAbilityState)
+        if (_playerMain._combatState == CombatState.RollState || _playerMain._combatState == CombatState.ActiveAbilityState)
             return;
 
         //if trying to spam attack during attack anims, punish w/ stamina cost
 
         if (_playerMain.InputRightArm)
         {
-            if (_combatState == CombatState.AttackState)
+            if (_playerMain._combatState == CombatState.AttackState)
                 costMultiplier = _playerMain._attackRightArmPunishMultiplier;
 
             if (_playerMain._currentStamina > 0.0f)
@@ -172,7 +171,7 @@ public class PlayerCombat : MonoBehaviour
         }
         else if (_playerMain.InputLeftArm)
         {
-            if (_combatState == CombatState.AttackState)
+            if (_playerMain._combatState == CombatState.AttackState)
                 costMultiplier = _playerMain._attackLeftArmPunishMultiplier;
 
             if (_playerMain._currentStamina > 0.0f)
@@ -189,54 +188,34 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    void ActiveAbilityManagement()
+    void ActiveAbilitiesManagement()
     {
-        if (_playerMain._headActiveAbility != null)
-        {
-            _animator.SetBool(_animatorHeadActiveAbilityParameter, _playerMain.InputHeadActiveAbility);
-            if (_playerMain.InputHeadActiveAbility)
-            {
-                SetCurrentActiveAbility(_playerMain._headActiveAbility);
-            }
-        }
-
-        if (_playerMain._torsoActiveAbility != null)
-        {
-            _animator.SetBool(_animatorTorsoActiveAbilityParameter, _playerMain.InputTorsoActiveAbility);
-            if (_playerMain.InputTorsoActiveAbility)
-            {
-                SetCurrentActiveAbility(_playerMain._torsoActiveAbility);
-            }
-        }
-
-        if (_playerMain._rightArmActiveAbility != null)
-        {
-            _animator.SetBool(_animatorRightArmActiveAbilityParameter, _playerMain.InputRightArmActiveAbility);
-            if (_playerMain.InputRightArmActiveAbility)
-            {
-                SetCurrentActiveAbility(_playerMain._rightArmActiveAbility);
-            }
-        }
-
-        if (_playerMain._leftArmActiveAbility != null)
-        {
-            _animator.SetBool(_animatorLeftArmActiveAbilityParameter, _playerMain.InputLeftArmActiveAbility);
-            if (_playerMain.InputLeftArmActiveAbility)
-            {
-                SetCurrentActiveAbility(_playerMain._leftArmActiveAbility);
-            }
-        }
-
-        if (_playerMain._legsActiveAbility != null)
-        {
-            _animator.SetBool(_animatorLegsActiveAbilityParameter, _playerMain.InputLegsActiveAbility);
-            if (_playerMain.InputLegsActiveAbility)
-            {
-                SetCurrentActiveAbility(_playerMain._legsActiveAbility);
-            }
-        }
-
         _animator.SetBool(_animatorUsingActiveAbilityParameter, _playerMain.IsUsingAbility);
+
+        //want to return early since another ability is in use
+        if (_playerMain.IsUsingAbility)
+            return;
+
+        ActiveAbilityManagement(_playerMain._headActiveAbility, _playerMain.InputHeadActiveAbility, _animatorHeadActiveAbilityParameter);
+        ActiveAbilityManagement(_playerMain._torsoActiveAbility, _playerMain.InputTorsoActiveAbility, _animatorTorsoActiveAbilityParameter);
+        ActiveAbilityManagement(_playerMain._rightArmActiveAbility, _playerMain.InputRightArmActiveAbility, _animatorRightArmActiveAbilityParameter);
+        ActiveAbilityManagement(_playerMain._leftArmActiveAbility, _playerMain.InputLeftArmActiveAbility, _animatorLeftArmActiveAbilityParameter);
+        ActiveAbilityManagement(_playerMain._legsActiveAbility, _playerMain.InputLegsActiveAbility, _animatorLegsActiveAbilityParameter);
+    }
+
+    void ActiveAbilityManagement(ActiveAbility activeAbility, bool input, int animatorParameter)
+    {
+        bool canUse = false;
+        if (activeAbility != null)
+        {
+            if (input && _playerMain._currentCombatPoints >= activeAbility._activeCost)
+            {
+                _playerMain._currentCombatPoints -= activeAbility._activeCost;
+                canUse = true;
+                SetCurrentActiveAbility(activeAbility);
+            }
+        }
+        _animator.SetBool(animatorParameter, canUse);
     }
 
     #endregion
@@ -333,14 +312,14 @@ public class PlayerCombat : MonoBehaviour
 
     public void SetCombatState(CombatState combatState)
     {
-        _combatState = combatState;
+        _playerMain._combatState = combatState;
 
-        if (_combatState == CombatState.BufferState)
+        if (_playerMain._combatState == CombatState.BufferState)
         {
             MeleeInitializeBufferTime();
             UpdateAttackFields();
         }
-        else if (_combatState == CombatState.ActiveAbilityState || _combatState == CombatState.RollState)
+        else if (_playerMain._combatState == CombatState.ActiveAbilityState || _playerMain._combatState == CombatState.RollState)
         {
             StopMeleeCombo();
         }
@@ -348,14 +327,14 @@ public class PlayerCombat : MonoBehaviour
 
     private void StopMeleeCombo()
     {
-        if (_combatState == CombatState.RollState)
+        if (_playerMain._combatState == CombatState.RollState)
         {
             _leftComboCounter = 0;
             _rightComboCounter = 0;
         }
-        else if (_combatState == CombatState.ActiveAbilityState)
+        else if (_playerMain._combatState == CombatState.ActiveAbilityState)
         {
-            _playerMain.IsUsingAbility = true;
+            //_playerMain.IsUsingAbility = true;
         }
 
         DisableComboTimer();
@@ -369,11 +348,11 @@ public class PlayerCombat : MonoBehaviour
 
     public void MeleeNotPressedInState()
     {
-        if (_combatState == CombatState.BufferState)
+        if (_playerMain._combatState == CombatState.BufferState)
         {
             //StaminaRegeneration(_staminaRegenerationSpeed / 2.0f);
         }
-        else if (_combatState == CombatState.IdleState)
+        else if (_playerMain._combatState == CombatState.IdleState)
         {
             _leftComboCounter = 0;
             _rightComboCounter = 0;
@@ -382,7 +361,7 @@ public class PlayerCombat : MonoBehaviour
             StaminaRegeneration(_staminaRegenerationSpeed);
             CombatPointsDrain(_staminaRegenerationSpeed * 0.5f);
         }
-        else if (_combatState == CombatState.RollState)
+        else if (_playerMain._combatState == CombatState.RollState)
         {
             CombatPointsDrain(_staminaRegenerationSpeed * 0.5f);
         }
@@ -392,11 +371,11 @@ public class PlayerCombat : MonoBehaviour
 
     public void MeleePressedInState(string arm = "")
     {
-        if (_combatState == CombatState.AttackState)
+        if (_playerMain._combatState == CombatState.AttackState)
         {
             _playerMain._potentialStaminaRegain = 0.0f;
         }
-        else if (_combatState == CombatState.BufferState || _combatState == CombatState.IdleState)
+        else if (_playerMain._combatState == CombatState.BufferState || _playerMain._combatState == CombatState.IdleState)
         {
             if (arm.Equals("RIGHT"))
             {

@@ -4,7 +4,6 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
     public PlayerMain _playerMain;
-    public PlayerCombat _playerCombat;
 
     private Transform _cameraTransform;
 
@@ -55,7 +54,6 @@ public class PlayerMovement : MonoBehaviour {
     void InitializePlayerLogic()
     {
         _playerMain = gameObject.GetComponent<PlayerMain>();
-        _playerCombat = gameObject.GetComponent<PlayerCombat>();
         _cameraTransform = Camera.main.transform;
     }
 
@@ -125,7 +123,8 @@ public class PlayerMovement : MonoBehaviour {
 
     void MovementManagement(float horizontal, float vertical, bool running, bool sprinting)
     {
-        if (_playerMain.IsAttacking || _playerMain.IsUsingAbility) return;
+        if (_playerMain._combatState == CombatState.AttackState || _playerMain._combatState == CombatState.ActiveAbilityState)
+            return;
 
         Rotating(-vertical, -horizontal);
 
