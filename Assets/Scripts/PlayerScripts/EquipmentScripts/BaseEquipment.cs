@@ -22,9 +22,9 @@ public abstract class BaseEquipment : MonoBehaviour
     public void Awake()
     {
         _myCharacter = GetComponentInParent<BaseWorldCharacter>();
-        _activeAbility = GetComponentInChildren<ActiveAbility>();
+
         _equipped = false;
-        _activeAbility._activeCost = _activeAbilityCost;
+        InitializeActiveAbility();
     }
 
     // Use this for initialization
@@ -35,6 +35,13 @@ public abstract class BaseEquipment : MonoBehaviour
 	void Update () {
 	
 	}
+
+    void InitializeActiveAbility()
+    {
+        _activeAbility = GetComponentInChildren<ActiveAbility>();
+        if (_activeAbility != null)
+            _activeAbility._activeCost = _activeAbilityCost;
+    }
 
     public ActiveAbility ActiveAbility { get { return _activeAbility; } }
 

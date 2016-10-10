@@ -15,7 +15,7 @@ public class PlayerCombat : MonoBehaviour
     private int _animatorLeftAttackComboCounterParameter;
     private int _animtorDamagedParameter;
     private int _animtorRollParameter;
-    private int _animtorComboTimerOnParameter;
+    private int _animtorCombatTimerOnParameter;
 
     private int _animatorUsingActiveAbilityParameter;
     private int _animatorHeadActiveAbilityParameter;
@@ -98,7 +98,7 @@ public class PlayerCombat : MonoBehaviour
         _animatorRightAttackComboCounterParameter = Animator.StringToHash("RightComboCounter");
         _animatorLeftAttackComboCounterParameter = Animator.StringToHash("LeftComboCounter");
         _animtorDamagedParameter = Animator.StringToHash("Damaged");
-        _animtorComboTimerOnParameter = Animator.StringToHash("ComboTimerOn");
+        _animtorCombatTimerOnParameter = Animator.StringToHash("CombatTimerOn");
         _animtorRollParameter = Animator.StringToHash("Roll");
 
         _animatorUsingActiveAbilityParameter = Animator.StringToHash("UsingActiveAbility");
@@ -237,7 +237,7 @@ public class PlayerCombat : MonoBehaviour
         {
             _attackCurrentComboTimer = _attackInitialComboTimer = _attackComboTimerDuration;
             _attackComboTimerComponent.gameObject.SetActive(true);
-            _animator.SetBool(_animtorComboTimerOnParameter, true);
+            _animator.SetBool(_animtorCombatTimerOnParameter, true);
         }
     }
 
@@ -245,7 +245,7 @@ public class PlayerCombat : MonoBehaviour
     {
         _attackCurrentComboTimer = 0.0f;
         _attackComboTimerComponent.gameObject.SetActive(false);
-        _animator.SetBool(_animtorComboTimerOnParameter, false);
+        _animator.SetBool(_animtorCombatTimerOnParameter, false);
     }
 
     #endregion
