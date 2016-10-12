@@ -72,4 +72,9 @@ public class BaseAbilityEffect : MonoBehaviour {
     {
         SetParent(_activeAbility.gameObject);
     }
+
+    public Damage GetDamage()
+    {
+        return new Damage(50.0f, DamageType.Stunned);
+    }
 }

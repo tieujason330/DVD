@@ -462,7 +462,7 @@ public class PlayerCombat : MonoBehaviour
         _playerMain.IsRightAttacking = _playerMain.IsLeftAttacking = false;
     }
 
-    public bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
+    public bool GiveDamage(Damage damage, BaseWorldCharacter attackedCharacter)
     {
         if (attackedCharacter != null)
         {
@@ -475,12 +475,12 @@ public class PlayerCombat : MonoBehaviour
         return true;
     }
 
-    public bool TakeDamage(float damage)
+    public bool TakeDamage(Damage damage)
     {
         _animator.SetTrigger(_animtorDamagedParameter);
-        if (_playerMain._currentHealth > damage)
+        if (_playerMain._currentHealth > damage._amount)
         {
-            _playerMain._currentHealth -= damage;
+            _playerMain._currentHealth -= damage._amount;
         }
         else
         {

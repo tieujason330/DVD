@@ -41,12 +41,18 @@ public class RangedWeapon : BaseWeapon
 
     public void GiveDamage(BaseWorldCharacter attackedCharacter)
     {
-        MyCharacter.GiveDamage(10.0f, attackedCharacter);
+        MyCharacter.GiveDamage(GetDamage(), attackedCharacter);
     }
 
     public void AddProjectile(Projectile projectile)
     {
         _projectiles.Enqueue(projectile);
+    }
+
+    private Damage GetDamage()
+    {
+        float amount = UnityEngine.Random.Range(_minimumDamage, _maximumDamage);
+        return new Damage(amount, DamageType.Normal);
     }
 
     public Projectile TakeProjectile()

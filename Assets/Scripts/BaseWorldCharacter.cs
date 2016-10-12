@@ -46,8 +46,8 @@ public abstract class BaseWorldCharacter : MonoBehaviour
 
     public bool IsAiming { get; set; }
     //public abstract bool IsAttacking();
-    public abstract bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter);
-    public abstract bool TakeDamage(float damage);
+    public abstract bool GiveDamage(Damage damage, BaseWorldCharacter attackedCharacter);
+    public abstract bool TakeDamage(Damage damage);
 
     public void AttackAnimationEvent()
     {

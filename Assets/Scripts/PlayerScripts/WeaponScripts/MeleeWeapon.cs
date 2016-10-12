@@ -15,6 +15,8 @@ public class MeleeWeapon : BaseWeapon
     public float _punishMultiplier;
     public float _combatPointsGainMultiplier;
 
+    public DamageType _damageType;
+
     void Awake()
     {
         base.Awake();
@@ -48,7 +50,7 @@ public class MeleeWeapon : BaseWeapon
         _collider.enabled = false;
         BaseWorldCharacter attackedCharacter = collider.gameObject.GetComponent<BaseWorldCharacter>();
         if (attackedCharacter != null)
-            MyCharacter.GiveDamage(CalculateDamage(), attackedCharacter);
+            MyCharacter.GiveDamage(GetDamage(), attackedCharacter);
     }
 
     void OnEnable()
@@ -77,9 +79,10 @@ public class MeleeWeapon : BaseWeapon
         }
     }
 
-    private float CalculateDamage()
+    private Damage GetDamage()
     {
-        return UnityEngine.Random.Range(_minimumDamage, _maximumDamage);
+        float amount = UnityEngine.Random.Range(_minimumDamage, _maximumDamage);
+        return new Damage(amount, _damageType);
     }
 
     public override void Equip()

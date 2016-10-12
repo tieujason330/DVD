@@ -13,9 +13,12 @@ public class BaseAIUnit : BaseWorldCharacter
 
     private int _animationRunParameter;
     private int _animatorAttackParameter;
-    private int _animatorDamagedParameter;
+    private int _animatorDamagedNormalParameter;
+    private int _animatorDamagedStunnedParameter;
+    private int _animatorDamagedKnockBackParameter;
     private int _animatorArmedParameter;
     private int _animatorUnarmedParameter;
+    private int _animatorDeadParameter;
 
     private bool _runBool;
     private bool _attackBool;
@@ -24,6 +27,8 @@ public class BaseAIUnit : BaseWorldCharacter
 
     private MeleeWeapon _meleeWeapon;
     private bool _weaponArmed;
+
+    private bool _isAlive = true;
 
     public void Awake()
     {
@@ -37,9 +42,12 @@ public class BaseAIUnit : BaseWorldCharacter
 
         _animationRunParameter = Animator.StringToHash("Run");
         _animatorAttackParameter = Animator.StringToHash("Attack");
-        _animatorDamagedParameter = Animator.StringToHash("Damaged");
         _animatorArmedParameter = Animator.StringToHash("Armed");
         _animatorUnarmedParameter = Animator.StringToHash("Unarmed");
+        _animatorDamagedNormalParameter = Animator.StringToHash("DamagedNormal");
+        _animatorDamagedStunnedParameter = Animator.StringToHash("DamagedStunned");
+        _animatorDamagedKnockBackParameter = Animator.StringToHash("DamagedKnockBack");
+        _animatorDeadParameter = Animator.StringToHash("Dead");
     }
 
     // Use this for initialization
@@ -53,9 +61,10 @@ public class BaseAIUnit : BaseWorldCharacter
 	{
         base.Update();
 
-	    if (_currentHealth <= 0)
+	    if (_currentHealth <= 0 && _isAlive)
 	    {
-	        gameObject.SetActive(false);
+            //gameObject.SetActive(false);
+            CharacterDiedLogic();
 	        return;
 	    }
 
@@ -67,6 +76,13 @@ public class BaseAIUnit : BaseWorldCharacter
         NavigationLogic();
         AttackLogic();
         UpdateAnimations();
+    }
+
+    void CharacterDiedLogic()
+    {
+        //_animator.SetTrigger(_animatorDeadParameter);
+        //_isAlive = false;
+
     }
 
     void NavigationLogic()
@@ -134,17 +150,34 @@ public class BaseAIUnit : BaseWorldCharacter
         _animator.SetBool(_animatorAttackParameter, _attackBool);
     }
 
-    public override bool TakeDamage(float damage)
+    public override bool TakeDamage(Damage damage)
     {
-        _animator.SetTrigger(_animatorDamagedParameter);
-        if (_currentHealth > damage)
-            _currentHealth -= damage;
+        DamageReaction(damage._type);
+
+        if (_currentHealth > damage._amount)
+            _currentHealth -= damage._amount;
         else
         {
             _currentHealth = 0;
         }
         Debug.Log(string.Format("{0} ==> {1}HP", gameObject.name, _currentHealth));
         return true;
+    }
+
+    private void DamageReaction(DamageType type)
+    {
+        switch (type)
+        {
+            case DamageType.Normal:
+                _animator.SetTrigger(_animatorDamagedNormalParameter);
+                break;
+            case DamageType.Stunned:
+                _animator.SetTrigger(_animatorDamagedStunnedParameter);
+                break;
+            case DamageType.Knockback:
+                _animator.SetTrigger(_animatorDamagedKnockBackParameter);
+                break;
+        }
     }
 
     //public virtual bool IsAttacking()
@@ -160,7 +193,7 @@ public class BaseAIUnit : BaseWorldCharacter
     //    return false;
     //}
 
-    public override bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
+    public override bool GiveDamage(Damage damage, BaseWorldCharacter attackedCharacter)
     {
         if (attackedCharacter != null)
         {
@@ -214,5 +247,15 @@ public class BaseAIUnit : BaseWorldCharacter
     public override void SetupEquipmentLogic(BaseEquipment equipment, bool equip)
     {
         //throw new NotImplementedException();
+    }
+
+    void OnParticleCollision(GameObject obj)
+    {
+        BaseAbilityEffect effect = obj.GetComponentInParent<BaseAbilityEffect>();
+
+        if (effect)
+        {
+            TakeDamage(effect.GetDamage());
+        }
     }
 }

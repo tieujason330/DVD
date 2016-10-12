@@ -195,12 +195,12 @@ public class PlayerMain : BaseWorldCharacter
         }
     }
 
-    public override bool GiveDamage(float damage, BaseWorldCharacter attackedCharacter)
+    public override bool GiveDamage(Damage damage, BaseWorldCharacter attackedCharacter)
     {
         return _playerCombat.GiveDamage(damage, attackedCharacter);
     }
 
-    public override bool TakeDamage(float damage)
+    public override bool TakeDamage(Damage damage)
     {
         return _playerCombat.TakeDamage(damage);
     }
